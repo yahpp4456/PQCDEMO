@@ -1,4 +1,7 @@
-﻿using System.Diagnostics;
+﻿using PQCDEMO.Properties;
+using System.Diagnostics;
+using System.Drawing.Imaging;
+using System.Windows.Forms;
 using TPM;
 
 namespace PQCDEMO
@@ -111,11 +114,55 @@ namespace PQCDEMO
         {
             InitializeComponent();
             initMot();
+            QcStatus();
+            InitializeTextBoxGroup(axis1TextBoxes, groupBox1, 50, "A");
+            InitializeTextBoxGroup(axis2TextBoxes, groupBox1, 100, "B");
+            InitializeTextBoxGroup(axis3TextBoxes, groupBox1, 150, "C");
 
-            InitializeTextBoxGroup(axis1TextBoxes, groupBox1, 50, "X");
-            InitializeTextBoxGroup(axis2TextBoxes, groupBox1, 100, "Y");
-            InitializeTextBoxGroup(axis3TextBoxes, groupBox1, 150, "Z");
+            InitializeTextBoxGroup(axis1TextBoxes, groupBox2, 50, "I");
+            InitializeTextBoxGroup(axis2TextBoxes, groupBox2, 100, "O");
         }
+
+        private void QcStatus()
+        {
+     
+            Image originalImage = Resources.M114;
+
+         
+            ColorMatrix colorMatrix = new ColorMatrix();
+            colorMatrix.Matrix33 = 0.5f; 
+
+       
+            ImageAttributes imageAttributes = new ImageAttributes();
+            imageAttributes.SetColorMatrix(colorMatrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
+
+        
+            Bitmap transparentImage = new Bitmap(originalImage.Width, originalImage.Height);
+            using (Graphics graphics = Graphics.FromImage(transparentImage))
+            {
+                graphics.DrawImage(originalImage, new Rectangle(0, 0, originalImage.Width, originalImage.Height),
+                                   0, 0, originalImage.Width, originalImage.Height, GraphicsUnit.Pixel, imageAttributes);
+            }
+
+        
+            pictureBox1.Image = transparentImage;
+
+            label1.BackColor = Color.Transparent;
+            label1.Parent = pictureBox1;
+         
+            label1.ForeColor = Color.Green;
+            int x = (pictureBox1.Width - label1.Width) / 2;
+            int y = (pictureBox1.Height - label1.Height) / 2;
+
+            label1.Location = new Point(x, y);
+
+
+
+
+        }
+
+
+
         private void InitializeTextBoxGroup(List<TextBox> textBoxGroup, GroupBox groupBox, int startY, string axisName)
         {
             for (int i = 0; i < 16; i++)

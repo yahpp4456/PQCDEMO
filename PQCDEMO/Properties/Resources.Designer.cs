@@ -63,9 +63,9 @@ namespace PQCDEMO.Properties {
         /// <summary>
         ///   查詢類型 System.Drawing.Bitmap 的當地語系化資源。
         /// </summary>
-        internal static System.Drawing.Bitmap _656 {
+        internal static System.Drawing.Bitmap M114 {
             get {
-                object obj = ResourceManager.GetObject("656", resourceCulture);
+                object obj = ResourceManager.GetObject("M114", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
