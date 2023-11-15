@@ -9,21 +9,7 @@ namespace PQCDEMO
     public partial class Form1 : Form
     {
 
-
-        private readonly HashSet<int> requiredFunctionPositions = new HashSet<int> { 9, 6, 12, 13 }; // 可以動態更新這個集合
-
-        private bool AreAllRequiredFunctionsActive(UInt16 axisStatus, HashSet<int> requiredPositions)
-        {
-            foreach (int position in requiredPositions)
-            {
-                if (!IsFunctionActive(bitMeaningMapping[position], axisStatus))
-                {
-                    return false;
-                }
-            }
-            return true;
-        }
-
+        TextBox[] textBoxes = new TextBox[16];
         UInt16 AxisOrgStatus;
         Master.PCI_M114.ErrCode ret;
         ushort SwitchNo;
