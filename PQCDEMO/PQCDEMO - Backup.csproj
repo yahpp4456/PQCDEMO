@@ -29,4 +29,12 @@
     </EmbeddedResource>
   </ItemGroup>
 
+  <ItemGroup>
+    <EditorConfigFiles Remove="C:\Users\SAM\Desktop\202231104\PQCDEMO\PQCDEMO\.editorconfig" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="C:\Users\SAM\Desktop\202231104\PQCDEMO\PQCDEMO\.editorconfig" />
+  </ItemGroup>
+
 </Project>
