@@ -63,9 +63,39 @@ namespace PQCDEMO.Properties {
         /// <summary>
         ///   查詢類型 System.Drawing.Bitmap 的當地語系化資源。
         /// </summary>
+        internal static System.Drawing.Bitmap DP {
+            get {
+                object obj = ResourceManager.GetObject("DP", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類型 System.Drawing.Bitmap 的當地語系化資源。
+        /// </summary>
+        internal static System.Drawing.Bitmap DP3000_G3_V2_Ori_color {
+            get {
+                object obj = ResourceManager.GetObject("DP3000-G3-V2-Ori-color", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類型 System.Drawing.Bitmap 的當地語系化資源。
+        /// </summary>
         internal static System.Drawing.Bitmap M114 {
             get {
                 object obj = ResourceManager.GetObject("M114", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類型 System.Drawing.Bitmap 的當地語系化資源。
+        /// </summary>
+        internal static System.Drawing.Bitmap PCE_D122IS_SN_800x600 {
+            get {
+                object obj = ResourceManager.GetObject("PCE-D122IS-SN_800x600", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

@@ -119,24 +119,36 @@ namespace PQCDEMO
             InitializeTextBoxGroup(axis2TextBoxes, groupBox1, 100, "B");
             InitializeTextBoxGroup(axis3TextBoxes, groupBox1, 150, "C");
 
-            InitializeTextBoxGroup(axis1TextBoxes, groupBox2, 50, "I");
-            InitializeTextBoxGroup(axis2TextBoxes, groupBox2, 100, "O");
+            InitializeTextBoxGroup(axis1TextBoxes, groupBox3, 100, "I");
         }
 
         private void QcStatus()
         {
-     
-            Image originalImage = Resources.M114;
 
-         
+
+            pictrans(pictureBox1,label1);
+
+        
+
+
+
+
+        }
+
+        private void pictrans(PictureBox pic,Label lab)
+        {
+
+            Image originalImage = pic.Image;
+
+
             ColorMatrix colorMatrix = new ColorMatrix();
-            colorMatrix.Matrix33 = 0.5f; 
+            colorMatrix.Matrix33 = 0.5f;
 
-       
+
             ImageAttributes imageAttributes = new ImageAttributes();
             imageAttributes.SetColorMatrix(colorMatrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
 
-        
+
             Bitmap transparentImage = new Bitmap(originalImage.Width, originalImage.Height);
             using (Graphics graphics = Graphics.FromImage(transparentImage))
             {
@@ -144,23 +156,22 @@ namespace PQCDEMO
                                    0, 0, originalImage.Width, originalImage.Height, GraphicsUnit.Pixel, imageAttributes);
             }
 
-        
-            pictureBox1.Image = transparentImage;
 
-            label1.BackColor = Color.Transparent;
-            label1.Parent = pictureBox1;
-         
-            label1.ForeColor = Color.Green;
-            int x = (pictureBox1.Width - label1.Width) / 2;
-            int y = (pictureBox1.Height - label1.Height) / 2;
-
-            label1.Location = new Point(x, y);
+            pic.Image = transparentImage;
 
 
+
+            lab.BackColor = Color.Transparent;
+            lab.Parent = pic;
+
+            lab.ForeColor = Color.Green;
+            int x = (pic.Width - lab.Width) / 2;
+            int y = (pic.Height - lab.Height) / 2;
+
+            lab.Location = new Point(x, y);
 
 
         }
-
 
 
         private void InitializeTextBoxGroup(List<TextBox> textBoxGroup, GroupBox groupBox, int startY, string axisName)
@@ -247,6 +258,16 @@ namespace PQCDEMO
         }
 
         private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label4_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label6_Click(object sender, EventArgs e)
         {
 
         }
