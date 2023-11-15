@@ -10,7 +10,7 @@ namespace PQCDEMO
     {
 
 
-        private readonly HashSet<int> requiredFunctionPositions = new HashSet<int> { 1, 7, 12, 13 }; // 可以動態更新這個集合
+        private readonly HashSet<int> requiredFunctionPositions = new HashSet<int> { 9, 7, 12, 13 }; // 可以動態更新這個集合
 
         private bool AreAllRequiredFunctionsActive(UInt16 axisStatus, HashSet<int> requiredPositions)
         {
