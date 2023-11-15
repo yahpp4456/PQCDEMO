@@ -10,8 +10,6 @@ namespace PQCDEMO
     {
 
         TextBox[] textBoxes = new TextBox[16];
-        TextBox[] textBoxes2 = new TextBox[16];
-        TextBox[] textBoxes3 = new TextBox[16];
         UInt16 AxisOrgStatus;
         Master.PCI_M114.ErrCode ret;
         ushort SwitchNo;
