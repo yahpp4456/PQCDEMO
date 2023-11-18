@@ -36,10 +36,14 @@
             pictureBox2 = new PictureBox();
             groupBox3 = new GroupBox();
             groupBox5 = new GroupBox();
+            groupBox6 = new GroupBox();
+            pictureBox3 = new PictureBox();
             groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox2).BeginInit();
+            groupBox3.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox3).BeginInit();
             SuspendLayout();
             // 
             // button1
@@ -99,12 +103,12 @@
             groupBox2.Size = new Size(1500, 350);
             groupBox2.TabIndex = 2;
             groupBox2.TabStop = false;
-            groupBox2.Text = "機台Config";
+            groupBox2.Text = "IO卡";
             // 
             // pictureBox2
             // 
             pictureBox2.Dock = DockStyle.Right;
-            pictureBox2.Image = Properties.Resources.DP3000_G3_V2_Ori_color;
+            pictureBox2.Image = Properties.Resources.DP;
             pictureBox2.Location = new Point(1143, 53);
             pictureBox2.Margin = new Padding(7);
             pictureBox2.Name = "pictureBox2";
@@ -115,6 +119,7 @@
             // 
             // groupBox3
             // 
+            groupBox3.Controls.Add(pictureBox3);
             groupBox3.Location = new Point(28, 771);
             groupBox3.Margin = new Padding(7);
             groupBox3.Name = "groupBox3";
@@ -122,7 +127,7 @@
             groupBox3.Size = new Size(1500, 350);
             groupBox3.TabIndex = 3;
             groupBox3.TabStop = false;
-            groupBox3.Text = "機台Config";
+            groupBox3.Text = "機台";
             // 
             // groupBox5
             // 
@@ -135,12 +140,36 @@
             groupBox5.TabStop = false;
             groupBox5.Text = "機台Config";
             // 
+            // groupBox6
+            // 
+            groupBox6.Location = new Point(28, 1140);
+            groupBox6.Margin = new Padding(7);
+            groupBox6.Name = "groupBox6";
+            groupBox6.Padding = new Padding(7);
+            groupBox6.Size = new Size(1500, 350);
+            groupBox6.TabIndex = 5;
+            groupBox6.TabStop = false;
+            groupBox6.Text = "機台Config";
+            // 
+            // pictureBox3
+            // 
+            pictureBox3.Dock = DockStyle.Right;
+            pictureBox3.Image = Properties.Resources.DP3000_G3_V2_Ori_color;
+            pictureBox3.Location = new Point(1143, 53);
+            pictureBox3.Margin = new Padding(7);
+            pictureBox3.Name = "pictureBox3";
+            pictureBox3.Size = new Size(350, 290);
+            pictureBox3.SizeMode = PictureBoxSizeMode.Zoom;
+            pictureBox3.TabIndex = 1;
+            pictureBox3.TabStop = false;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(21F, 46F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.White;
-            ClientSize = new Size(2960, 1393);
+            ClientSize = new Size(3045, 1506);
+            Controls.Add(groupBox6);
             Controls.Add(groupBox5);
             Controls.Add(groupBox3);
             Controls.Add(groupBox2);
@@ -156,6 +185,8 @@
             ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             groupBox2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)pictureBox2).EndInit();
+            groupBox3.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)pictureBox3).EndInit();
             ResumeLayout(false);
         }
 
@@ -171,5 +202,7 @@
         private GroupBox groupBox4;
         private GroupBox groupBox3;
         private GroupBox groupBox5;
+        private GroupBox groupBox6;
+        private PictureBox pictureBox3;
     }
 }
