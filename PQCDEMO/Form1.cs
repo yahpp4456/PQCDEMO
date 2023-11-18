@@ -126,12 +126,9 @@ namespace PQCDEMO
         {
 
 
-            pictrans(pictureBox1,label1);
-
-        
-
-
-
+            pictrans(pictureBox1, label1);
+            pictrans(pictureBox2, label2);
+            pictrans(pictureBox3, label3);
 
         }
 
