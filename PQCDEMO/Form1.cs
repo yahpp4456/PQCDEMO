@@ -119,20 +119,20 @@ namespace PQCDEMO
             InitializeTextBoxGroup(axis2TextBoxes, groupBox1, 100, "B");
             InitializeTextBoxGroup(axis3TextBoxes, groupBox1, 150, "C");
 
-            InitializeTextBoxGroup(axis1TextBoxes, groupBox3, 100, "I");
+            // InitializeTextBoxGroup(axis1TextBoxes, groupBox3, 100, "I");
         }
 
         private void QcStatus()
         {
 
 
-            pictrans(pictureBox1, label1);
-            pictrans(pictureBox2, label2);
-            pictrans(pictureBox3, label3);
+            //   pictrans(pictureBox1, label1);
+            // pictrans(pictureBox2, label2);
+            // pictrans(pictureBox3, label3);
 
         }
 
-        private void pictrans(PictureBox pic,Label lab)
+        private void pictrans(PictureBox pic, Label lab)
         {
 
             Image originalImage = pic.Image;
@@ -265,6 +265,11 @@ namespace PQCDEMO
         }
 
         private void label6_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
         {
 
         }
