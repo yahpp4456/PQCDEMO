@@ -17,6 +17,7 @@ namespace PQCDEMO
         private AxisController axisXController;
         private AxisController axisYController;
         private AxisController axisZController;
+        private List<Label> inputLabels;
 
         private MotionController _m114= new MotionController(true);
 
@@ -38,6 +39,32 @@ namespace PQCDEMO
             axisXController.UpdateTextBoxGroup(startY);
             axisYController.UpdateTextBoxGroup(startY + (textBoxHeight + gap)); // 16 TextBoxes per axis
             axisZController.UpdateTextBoxGroup(startY + (textBoxHeight + gap)*2);
+
+
+
+
+
+
+            inputLabels = new List<Label>();
+            for (byte bitNo = 0; bitNo < 16; bitNo++)
+            {
+                Button btn = new Button();
+                //  label.Text = $"Input {bitNo}: {ioControl.ReadInput(bitNo)}";
+
+                btn.Text = bitNo.ToString();
+                btn.Top = 20 + (bitNo * 25);
+                btn.Left = 10;
+                btn.Location= new Point( btn.Top+10, btn.Left+50);
+              //  inputLabels.Add(btn);
+                groupBox2.Controls.Add(btn); // 添加到 group2 中
+            }
+
+
+
+
+
+
+
         }
 
      
