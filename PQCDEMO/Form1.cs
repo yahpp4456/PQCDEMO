@@ -22,35 +22,27 @@ namespace PQCDEMO
 
                public Form1()
         {
-            InitializeComponent();
-           // initMot();
 
+            IOCardWrapper pCE_D122Wrapper = new IOCardWrapper(true);
+            InitializeComponent();
+            // 初始化軸物件
             axisXController = new AxisController("X", _m114,0,groupBox1);
             axisYController = new AxisController("Y", _m114,1,groupBox1);
             axisZController = new AxisController("Z", _m114,2, groupBox1);
-            // InitializeTextBoxGroup(axis1TextBoxes, groupBox3, 100, "I");
-            // Set the starting Y positions so that each group of TextBoxes is below the previous group
+ 
             int startY = 30; // Starting Y position for the first axis
             int gap = 5; // Gap between each group of TextBoxes
-            int textBoxHeight = 30; // Assuming each TextBox is 20px high
+            int textBoxHeight = 30;
 
-            // Update the TextBox groups to position them correctly within the same GroupBox
+            // 更新文本框組
             axisXController.UpdateTextBoxGroup(startY);
             axisYController.UpdateTextBoxGroup(startY + (textBoxHeight + gap)); // 16 TextBoxes per axis
             axisZController.UpdateTextBoxGroup(startY + (textBoxHeight + gap)*2);
         }
 
-        private void QcStatus()
-        {
+     
 
-
-            //   pictrans(pictureBox1, label1);
-            // pictrans(pictureBox2, label2);
-            // pictrans(pictureBox3, label3);
-
-        }
-
-        private void pictrans(PictureBox pic, Label lab)
+       /* private void pictrans(PictureBox pic, Label lab)
         {
 
             Image originalImage = pic.Image;
@@ -85,51 +77,46 @@ namespace PQCDEMO
 
             lab.Location = new Point(x, y);
 
-        }
-
-        /*private void initMot()
-        {
-
-
-            UInt16 existcards = 0;
-            UInt16 CardNo = 0; // 
-
-
-            ret = Master.PCI_M114._m114_open(ref existcards);
-            if (existcards == 0 || ret != Master.PCI_M114.ErrCode.ERR_NoError)
-            {
-                MessageBox.Show("No any PCI_M114 or error in opening card!", "Error");
-                return;
-            }
-            else { MessageBox.Show("existcards: " + existcards); }
-
-
-            ret = Master.PCI_M114._m114_get_switch_card_num(CardNo, ref SwitchNo);
-            if (ret != Master.PCI_M114.ErrCode.ERR_NoError)
-            {
-                MessageBox.Show("Error in getting switch card number!", "Error");
-                return;
-            }
-
-            // 初始化控制卡
-            ret = Master.PCI_M114._m114_initial(SwitchNo);
-            if (ret != Master.PCI_M114.ErrCode.ERR_NoError)
-            {
-                MessageBox.Show("Error in initializing card!", "Error");
-                return;
-            }
-            else { MessageBox.Show("SwitchNo: " + SwitchNo); }
-
-
         }*/
+
         private void button1_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                test();
+}
+            catch (Exception ex)
+            {
+                MessageBox.Show($"發生錯誤: {ex.Message}", "錯誤", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+        void test()
         {
             axisXController.UpdateStatus();
 
+            HashSet<int> functionPositionsToCheck = new HashSet<int>
+        {
+            0, // RDY
+            2, // +EL
+            4, // ORG
+            6  // EMG
+        };
 
+            bool allFunctionsActive = axisXController.AreAllFunctionsActive(functionPositionsToCheck);
+
+            int axisStatus = 0;
+            foreach (int position in functionPositionsToCheck)
+            {
+                axisStatus |= (1 << position);
+            }
+
+            string message = allFunctionsActive
+                ? $"所有指定的功能位置都處於活動狀態。AxisStatus: 0x{axisStatus:X}"
+                : $"有一些或所有指定的功能位置不處於活動狀態。AxisStatus: 0x{axisStatus:X}";
+
+            MessageBox.Show(message, allFunctionsActive ? "提示" : "錯誤", MessageBoxButtons.OK, allFunctionsActive ? MessageBoxIcon.Information : MessageBoxIcon.Warning);
 
         }
-
 
         private void Form1_Load(object sender, EventArgs e)
         {

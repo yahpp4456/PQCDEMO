@@ -51,7 +51,7 @@ namespace PQCDEMO
         {
             axisStatus = 0;
             if (_demo) {
-                axisStatus = 64535; // 如果 demo 为 true，则设置 axisStatus 为 65536
+                axisStatus = 340; // 如果 demo 为 true，则设置 axisStatus 为 65536
                 return true;
             }
             ret  = Master.PCI_M114._m114_get_io_status(switchNo, axis, ref axisStatus);
