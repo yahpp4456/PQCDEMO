@@ -3,7 +3,6 @@ using System.Diagnostics;
 using System.Drawing.Imaging;
 using System.Windows.Forms;
 using TPM;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.Button;
 
 namespace PQCDEMO
 {
@@ -19,18 +18,18 @@ namespace PQCDEMO
         private AxisController axisZController;
         private List<Label> inputLabels;
 
-        private MotionController _m114= new MotionController(true);
+        private MotionController _m114 = new MotionController(true);
 
-               public Form1()
+        public Form1()
         {
 
             IOCardWrapper pCE_D122Wrapper = new IOCardWrapper(true);
             InitializeComponent();
             // 初始化軸物件
-            axisXController = new AxisController("X", _m114,0,groupBox1);
-            axisYController = new AxisController("Y", _m114,1,groupBox1);
-            axisZController = new AxisController("Z", _m114,2, groupBox1);
- 
+            axisXController = new AxisController("X", _m114, 0, groupBox1);
+            axisYController = new AxisController("Y", _m114, 1, groupBox1);
+            axisZController = new AxisController("Z", _m114, 2, groupBox1);
+
             int startY = 30; // Starting Y position for the first axis
             int gap = 5; // Gap between each group of TextBoxes
             int textBoxHeight = 30;
@@ -67,9 +66,15 @@ namespace PQCDEMO
 
         }
 
-     
 
-       /* private void pictrans(PictureBox pic, Label lab)
+
+
+
+
+
+
+
+        private void pictrans(PictureBox pic, Label lab)
         {
 
             Image originalImage = pic.Image;
@@ -97,21 +102,19 @@ namespace PQCDEMO
 
             lab.BackColor = Color.Transparent;
             lab.Parent = pic;
-
             lab.ForeColor = Color.Green;
             int x = (pic.Width - lab.Width) / 2;
             int y = (pic.Height - lab.Height) / 2;
-
             lab.Location = new Point(x, y);
 
-        }*/
+        }
 
         private void button1_Click(object sender, EventArgs e)
         {
             try
             {
                 test();
-}
+            }
             catch (Exception ex)
             {
                 MessageBox.Show($"發生錯誤: {ex.Message}", "錯誤", MessageBoxButtons.OK, MessageBoxIcon.Error);
