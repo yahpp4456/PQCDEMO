@@ -18,18 +18,18 @@ namespace PQCDEMO
         private AxisController axisZController;
         private List<Label> inputLabels;
 
-        private MotionController _m114= new MotionController(true);
+        private MotionController _m114 = new MotionController(true);
 
-       public Form1()
+        public Form1()
         {
 
             IOCardWrapper pCE_D122Wrapper = new IOCardWrapper(true);
             InitializeComponent();
             // 初始化軸物件
-            axisXController = new AxisController("X", _m114,0,groupBox1);
-            axisYController = new AxisController("Y", _m114,1,groupBox1);
-            axisZController = new AxisController("Z", _m114,2, groupBox1);
- 
+            axisXController = new AxisController("X", _m114, 0, groupBox1);
+            axisYController = new AxisController("Y", _m114, 1, groupBox1);
+            axisZController = new AxisController("Z", _m114, 2, groupBox1);
+
             int startY = 30; // Starting Y position for the first axis
             int gap = 5; // Gap between each group of TextBoxes
             int textBoxHeight = 30;
@@ -37,20 +37,20 @@ namespace PQCDEMO
             // 更新文本框組
             axisXController.UpdateTextBoxGroup(startY);
             axisYController.UpdateTextBoxGroup(startY + (textBoxHeight + gap)); // 16 TextBoxes per axis
-            axisZController.UpdateTextBoxGroup(startY + (textBoxHeight + gap)*2);
+            axisZController.UpdateTextBoxGroup(startY + (textBoxHeight + gap) * 2);
 
 
-                }
-
-    
-
+        }
 
 
 
 
-     
 
-        private void pictrans(PictureBox pic,Label lab)
+
+
+
+
+        private void pictrans(PictureBox pic, Label lab)
         {
 
             Image originalImage = pic.Image;
@@ -90,7 +90,7 @@ namespace PQCDEMO
             try
             {
                 test();
-}
+            }
             catch (Exception ex)
             {
                 MessageBox.Show($"發生錯誤: {ex.Message}", "錯誤", MessageBoxButtons.OK, MessageBoxIcon.Error);
