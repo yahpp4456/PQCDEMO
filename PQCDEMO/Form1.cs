@@ -30,6 +30,11 @@ namespace PQCDEMO
         UInt16 AxisOrgStatus;
         Master.PCI_M114.ErrCode ret;
         ushort SwitchNo;
+        enum Status
+        {
+            OK = 0,
+            NG = 1
+        }
 
         Dictionary<int, string> bitMeaningMapping = new Dictionary<int, string>
                 {
@@ -118,7 +123,7 @@ namespace PQCDEMO
             InitializeTextBoxGroup(axis1TextBoxes, groupBox1, 50, "A");
             InitializeTextBoxGroup(axis2TextBoxes, groupBox1, 100, "B");
             InitializeTextBoxGroup(axis3TextBoxes, groupBox1, 150, "C");
-
+            InitializeTextBoxGroup(axis1TextBoxes, groupBox2, 100, "I");
             InitializeTextBoxGroup(axis1TextBoxes, groupBox3, 100, "I");
         }
 
@@ -126,16 +131,16 @@ namespace PQCDEMO
         {
 
 
-            pictrans(pictureBox1,label1);
-
-        
+            pictrans(pictureBox1, label1, Status.OK);
+            pictrans(pictureBox2, label2, Status.OK);
+            pictrans(pictureBox3, label3, Status.NG);
 
 
 
 
         }
 
-        private void pictrans(PictureBox pic,Label lab)
+        private void pictrans(PictureBox pic, Label lab, Status status)
         {
 
             Image originalImage = pic.Image;
@@ -165,6 +170,7 @@ namespace PQCDEMO
             lab.Parent = pic;
 
             lab.ForeColor = Color.Green;
+            lab.ForeColor = status == Status.OK ? Color.Green : Color.Orange;
             int x = (pic.Width - lab.Width) / 2;
             int y = (pic.Height - lab.Height) / 2;
 

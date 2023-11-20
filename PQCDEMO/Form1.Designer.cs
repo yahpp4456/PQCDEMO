@@ -33,14 +33,14 @@
             label1 = new Label();
             pictureBox1 = new PictureBox();
             groupBox2 = new GroupBox();
+            label6 = new Label();
+            label5 = new Label();
             label2 = new Label();
             pictureBox2 = new PictureBox();
             groupBox3 = new GroupBox();
+            label4 = new Label();
             label3 = new Label();
             pictureBox3 = new PictureBox();
-            label4 = new Label();
-            label5 = new Label();
-            label6 = new Label();
             groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             groupBox2.SuspendLayout();
@@ -51,11 +51,15 @@
             // 
             // button1
             // 
+            button1.FlatAppearance.BorderColor = Color.Blue;
+            button1.FlatAppearance.BorderSize = 3;
+            button1.FlatStyle = FlatStyle.Flat;
+            button1.Font = new Font("Microsoft JhengHei UI", 72F, FontStyle.Regular, GraphicsUnit.Point);
             button1.Location = new Point(1157, 860);
             button1.Name = "button1";
             button1.Size = new Size(310, 167);
             button1.TabIndex = 0;
-            button1.Text = "Test";
+            button1.Text = "GO";
             button1.UseVisualStyleBackColor = true;
             button1.Click += button1_Click;
             // 
@@ -105,6 +109,30 @@
             groupBox2.TabStop = false;
             groupBox2.Text = "機台Config";
             // 
+            // label6
+            // 
+            label6.AutoSize = true;
+            label6.BackColor = Color.LimeGreen;
+            label6.Font = new Font("Microsoft JhengHei UI", 20F, FontStyle.Regular, GraphicsUnit.Point);
+            label6.ForeColor = Color.White;
+            label6.Location = new Point(358, 172);
+            label6.Name = "label6";
+            label6.Size = new Size(232, 43);
+            label6.TabIndex = 5;
+            label6.Text = "Voltage=24V";
+            // 
+            // label5
+            // 
+            label5.AutoSize = true;
+            label5.BackColor = Color.LimeGreen;
+            label5.Font = new Font("Microsoft JhengHei UI", 20F, FontStyle.Regular, GraphicsUnit.Point);
+            label5.ForeColor = Color.White;
+            label5.Location = new Point(14, 172);
+            label5.Name = "label5";
+            label5.Size = new Size(301, 43);
+            label5.TabIndex = 4;
+            label5.Text = "Mdata=QCconfig";
+            // 
             // label2
             // 
             label2.AutoSize = true;
@@ -139,6 +167,19 @@
             groupBox3.TabStop = false;
             groupBox3.Text = "DediWare";
             // 
+            // label4
+            // 
+            label4.AutoSize = true;
+            label4.BackColor = Color.Red;
+            label4.Font = new Font("Microsoft JhengHei UI", 20F, FontStyle.Regular, GraphicsUnit.Point);
+            label4.ForeColor = Color.White;
+            label4.Location = new Point(14, 181);
+            label4.Name = "label4";
+            label4.Size = new Size(225, 43);
+            label4.TabIndex = 4;
+            label4.Text = "Version:1.3.5";
+            label4.Click += label4_Click;
+            // 
             // label3
             // 
             label3.AutoSize = true;
@@ -161,43 +202,6 @@
             pictureBox3.TabIndex = 0;
             pictureBox3.TabStop = false;
             // 
-            // label4
-            // 
-            label4.AutoSize = true;
-            label4.BackColor = Color.Red;
-            label4.Font = new Font("Microsoft JhengHei UI", 20F, FontStyle.Regular, GraphicsUnit.Point);
-            label4.ForeColor = Color.White;
-            label4.Location = new Point(14, 72);
-            label4.Name = "label4";
-            label4.Size = new Size(225, 43);
-            label4.TabIndex = 4;
-            label4.Text = "Version:1.3.5";
-            label4.Click += label4_Click;
-            // 
-            // label5
-            // 
-            label5.AutoSize = true;
-            label5.BackColor = Color.LimeGreen;
-            label5.Font = new Font("Microsoft JhengHei UI", 20F, FontStyle.Regular, GraphicsUnit.Point);
-            label5.ForeColor = Color.White;
-            label5.Location = new Point(14, 172);
-            label5.Name = "label5";
-            label5.Size = new Size(301, 43);
-            label5.TabIndex = 4;
-            label5.Text = "Mdata=QCconfig";
-            // 
-            // label6
-            // 
-            label6.AutoSize = true;
-            label6.BackColor = Color.LimeGreen;
-            label6.Font = new Font("Microsoft JhengHei UI", 20F, FontStyle.Regular, GraphicsUnit.Point);
-            label6.ForeColor = Color.White;
-            label6.Location = new Point(358, 172);
-            label6.Name = "label6";
-            label6.Size = new Size(232, 43);
-            label6.TabIndex = 5;
-            label6.Text = "Voltage=24V";
-            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(9F, 19F);
@@ -211,7 +215,7 @@
             FormBorderStyle = FormBorderStyle.Fixed3D;
             MaximizeBox = false;
             Name = "Form1";
-            Text = "Form1";
+            Text = "EasyCheck ";
             groupBox1.ResumeLayout(false);
             groupBox1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
