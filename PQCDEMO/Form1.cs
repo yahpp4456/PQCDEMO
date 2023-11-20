@@ -1,6 +1,8 @@
-﻿using PQCDEMO.Properties;
+﻿using Newtonsoft.Json;
+using PQCDEMO.Properties;
 using System.Diagnostics;
 using System.Drawing.Imaging;
+using System.Security.Cryptography;
 using System.Windows.Forms;
 using TPM;
 
@@ -14,14 +16,17 @@ namespace PQCDEMO
         private AxisController axisXController;
         private AxisController axisYController;
         private AxisController axisZController;
-        private List<Label> inputLabels;
+        private List<Button> _inputbtn;
+
+        private ApplicationConfig appConfig;
 
         private MotionController _m114 = new MotionController(true);
+
+        IOCardWrapper pCE_D122Wrapper = new IOCardWrapper(true);
 
         public Form1()
         {
 
-            IOCardWrapper pCE_D122Wrapper = new IOCardWrapper(true);
             InitializeComponent();
             // 初始化軸物件
             axisXController = new AxisController("X", _m114, 0, groupBox1);
@@ -37,35 +42,128 @@ namespace PQCDEMO
             axisYController.UpdateTextBoxGroup(startY + (textBoxHeight + gap)); // 16 TextBoxes per axis
             axisZController.UpdateTextBoxGroup(startY + (textBoxHeight + gap) * 2);
 
-
-
-
-
-
-            inputLabels = new List<Label>();
+            LoadConfig();
+            /*
+            _inputbtn = new List<Button>();
             for (byte bitNo = 0; bitNo < 16; bitNo++)
             {
-                Button btn = new Button();
-                //  label.Text = $"Input {bitNo}: {ioControl.ReadInput(bitNo)}";
-
-                btn.Text = bitNo.ToString();
-                btn.Top = 20 + (bitNo * 25);
-                btn.Left = 10;
-                btn.Location = new Point(btn.Top + 10, btn.Left + 50);
-                //  inputLabels.Add(btn);
+                Button btn = new Button
+                {
+                    Size = new Size(30,30)
+                };
+               btn.Text = $"Input {bitNo}: {pCE_D122Wrapper.ReadInputBit(bitNo)}";
+                btn.Location = new Point(10+bitNo*35, 55);
+                btn.BackColor = pCE_D122Wrapper.ReadInputBit(bitNo)? Color.LightGreen : Color.Red;
+                _inputbtn.Add(btn);
                 groupBox2.Controls.Add(btn); // 添加到 group2 中
             }
 
-
-
-
-
-
-
+           */
         }
 
+        private void LoadConfig()
+        {
+            // 創建和配置 OpenFileDialog
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Title = "選擇配置文件";
+            openFileDialog.Filter = "JSON文件 (*.json)|*.json"; // 篩選只顯示JSON文件
+            openFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments); // 設置初始目錄
 
+            // 顯示對話框
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                // 讀取選擇的文件的內容
+                string jsonConfig = System.IO.File.ReadAllText(openFileDialog.FileName);
+                appConfig = JsonConvert.DeserializeObject<ApplicationConfig>(jsonConfig);
+            }
+            if (appConfig!=null)
+            {
+                CreateButtons();
 
+            }
+        }
+
+        private void CreateButtons()
+        {
+            // 创建一个Panel用于放置按钮
+            Panel buttonPanel = new Panel
+            {
+                AutoScroll = true, // 启用滚动条
+                Location = new Point(10, 20), // 设置Panel的位置
+                Size = new Size(groupBox2.Width - pictureBox2.Width-20, groupBox2.Height - 50), // 设置Panel的大小
+                BorderStyle = BorderStyle.None // 为了清晰可见，给Panel设置一个边框
+            };
+
+            groupBox2.Controls.Add(buttonPanel); // 将Panel添加到GroupBox
+
+            int x = 10; // Panel内的初始X坐标
+            int y = 10; // Panel内的初始Y坐标
+            const int padding = 10; // 按钮之间的间距
+            const int buttonWidth = 100; // 按钮的宽度
+            const int buttonHeight = 30; // 按钮的高度
+            int buttonPanelWidth = buttonPanel.Width - padding; // 用于计算何时需要换行
+
+            // 创建输入按钮
+            foreach (var input in appConfig.IOB.Inputs)
+            {
+                Button btn = new Button
+                {
+                    Text = input.Name,
+                    Size = new Size(buttonWidth, buttonHeight),
+                    Location = new Point(x, y)
+                };
+                btn.Click += (sender, e) => InputButtonClick(input.Id);
+                bool inputState = pCE_D122Wrapper.ReadInputBit(input.Id);
+                btn.BackColor = inputState? Color.LightGreen : Color.Green; ;
+                buttonPanel.Controls.Add(btn);
+
+                x += buttonWidth + padding;
+                // 如果下一个按钮的位置超出Panel的宽度，则换行
+                if (x + buttonWidth > buttonPanelWidth)
+                {
+                    x = 10; // 重置X坐标
+                    y += buttonHeight + padding; // 增加Y坐标
+                }
+            }
+
+            // 创建输出按钮，同样需要考虑换行
+            x = 10; // 重置X坐标
+            y += buttonHeight + padding; // 假设输入和输出按钮至少有一行的间隔
+
+            foreach (var output in appConfig.IOB.Outputs)
+            {
+                Button btn = new Button
+                {
+                    Text = output.Name,
+                    Size = new Size(buttonWidth, buttonHeight),
+                    Location = new Point(x, y)
+                };
+                btn.Click += (sender, e) => OutputButtonClick(output.Id);
+                buttonPanel.Controls.Add(btn);
+
+                x += buttonWidth + padding;
+                // 如果下一个按钮的位置超出Panel的宽度，则换行
+                if (x + buttonWidth > buttonPanelWidth)
+                {
+                    x = 10; // 重置X坐标
+                    y += buttonHeight + padding; // 增加Y坐标
+                }
+            }
+        }
+
+        private void InputButtonClick(byte id)
+        {
+            bool state = pCE_D122Wrapper.ReadInputBit(id);
+            MessageBox.Show($"Input {id}: {(state ? "On" : "Off")}", "Input State");
+        }
+
+        private void OutputButtonClick(byte id)
+        {
+            // 這裡的操作取決於您想要如何處理輸出按鈕的點擊事件。
+            // 例如，您可以切換輸出的狀態：
+            pCE_D122Wrapper.ToggleOutputBit(id);
+            MessageBox.Show($"Toggled output {id}.", "Output State");
+        }
         /* private void pictrans(PictureBox pic, Label lab)
          {
 

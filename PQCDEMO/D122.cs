@@ -129,6 +129,7 @@ namespace PQCDEMO
         private ushort m_CardNo = 0;
         private bool isDemoMode = false;
         private Dictionary<byte, bool> demoInputValues = new Dictionary<byte, bool>();
+        private Dictionary<byte, bool> demoOutputValues = new Dictionary<byte, bool>(); // 用於追蹤DEMO模式下的輸出狀態
 
         public enum ErrCode : short
         {
@@ -172,14 +173,12 @@ namespace PQCDEMO
         {
             if (isDemoMode)
             {
-                // 在DEMO模式下檢查是否有設定預設值
                 if (demoInputValues.ContainsKey(bitNo))
                 {
                     return demoInputValues[bitNo];
                 }
                 else
                 {
-                    // 如果沒有設定預設值，則返回虛擬數據
                     return SimulateInputBit(bitNo);
                 }
             }
@@ -234,7 +233,6 @@ namespace PQCDEMO
             }
         }
 
-        // 新增方法，用於設定 DEMO 模式下的預設輸入值
         public void SetDemoInputValue(byte bitNo, bool value)
         {
             if (isDemoMode)
@@ -252,18 +250,21 @@ namespace PQCDEMO
 
         private bool SimulateInputBit(byte bitNo)
         {
-            // 在DEMO模式下模擬讀取輸入位元的邏輯，例如返回虛擬數據
-            return false;
+            // 在DEMO模式下模擬讀取輸入位元的邏輯，這裡使用簡單的偶數位元返回 true，奇數位元返回 false 的邏輯
+            return bitNo % 2 == 0;
         }
 
         private void SimulateSetOutputBit(byte bitNo, bool state)
         {
-            // 在DEMO模式下模擬設置輸出位元的邏輯，例如記錄設置操作
+            // 在DEMO模式下模擬設置輸出位元的邏輯，記錄設置的狀態
+            demoOutputValues[bitNo] = state;
         }
 
         private void SimulateToggleOutputBit(byte bitNo)
         {
-            // 在DEMO模式下模擬切換輸出位元的邏輯，例如切換虛擬位元的狀態
+            // 在DEMO模式下模擬切換輸出位元的邏輯，改變位元的當前狀態
+            bool currentState = demoOutputValues.ContainsKey(bitNo) ? demoOutputValues[bitNo] : false;
+            demoOutputValues[bitNo] = !currentState;
         }
     }
 
