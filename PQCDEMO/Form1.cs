@@ -7,8 +7,6 @@ using TPM;
 namespace PQCDEMO
 {
 
-
-
     public partial class Form1 : Form
     {
 
@@ -37,7 +35,7 @@ namespace PQCDEMO
             // 更新文本框組
             axisXController.UpdateTextBoxGroup(startY);
             axisYController.UpdateTextBoxGroup(startY + (textBoxHeight + gap)); // 16 TextBoxes per axis
-            axisZController.UpdateTextBoxGroup(startY + (textBoxHeight + gap)*2);
+            axisZController.UpdateTextBoxGroup(startY + (textBoxHeight + gap) * 2);
 
 
 
@@ -53,8 +51,8 @@ namespace PQCDEMO
                 btn.Text = bitNo.ToString();
                 btn.Top = 20 + (bitNo * 25);
                 btn.Left = 10;
-                btn.Location= new Point( btn.Top+10, btn.Left+50);
-              //  inputLabels.Add(btn);
+                btn.Location = new Point(btn.Top + 10, btn.Left + 50);
+                //  inputLabels.Add(btn);
                 groupBox2.Controls.Add(btn); // 添加到 group2 中
             }
 
@@ -68,46 +66,42 @@ namespace PQCDEMO
 
 
 
+        /* private void pictrans(PictureBox pic, Label lab)
+         {
+
+             Image originalImage = pic.Image;
+
+
+             ColorMatrix colorMatrix = new ColorMatrix();
+             colorMatrix.Matrix33 = 0.5f;
+
+
+             ImageAttributes imageAttributes = new ImageAttributes();
+             imageAttributes.SetColorMatrix(colorMatrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
+
+
+             Bitmap transparentImage = new Bitmap(originalImage.Width, originalImage.Height);
+             using (Graphics graphics = Graphics.FromImage(transparentImage))
+             {
+                 graphics.DrawImage(originalImage, new Rectangle(0, 0, originalImage.Width, originalImage.Height),
+                                    0, 0, originalImage.Width, originalImage.Height, GraphicsUnit.Pixel, imageAttributes);
+             }
+
+
+             pic.Image = transparentImage;
 
 
 
+             lab.BackColor = Color.Transparent;
+             lab.Parent = pic;
 
+             lab.ForeColor = Color.Green;
+             int x = (pic.Width - lab.Width) / 2;
+             int y = (pic.Height - lab.Height) / 2;
 
+             lab.Location = new Point(x, y);
 
-        private void pictrans(PictureBox pic, Label lab)
-        {
-
-            Image originalImage = pic.Image;
-
-
-            ColorMatrix colorMatrix = new ColorMatrix();
-            colorMatrix.Matrix33 = 0.5f;
-
-
-            ImageAttributes imageAttributes = new ImageAttributes();
-            imageAttributes.SetColorMatrix(colorMatrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
-
-
-            Bitmap transparentImage = new Bitmap(originalImage.Width, originalImage.Height);
-            using (Graphics graphics = Graphics.FromImage(transparentImage))
-            {
-                graphics.DrawImage(originalImage, new Rectangle(0, 0, originalImage.Width, originalImage.Height),
-                                   0, 0, originalImage.Width, originalImage.Height, GraphicsUnit.Pixel, imageAttributes);
-            }
-
-
-            pic.Image = transparentImage;
-
-
-
-            lab.BackColor = Color.Transparent;
-            lab.Parent = pic;
-            lab.ForeColor = Color.Green;
-            int x = (pic.Width - lab.Width) / 2;
-            int y = (pic.Height - lab.Height) / 2;
-            lab.Location = new Point(x, y);
-
-        }
+         }*/
 
         private void button1_Click(object sender, EventArgs e)
         {
