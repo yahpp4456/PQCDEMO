@@ -19,10 +19,10 @@ namespace PQCDEMO
         private List<Button> _inputbtn;
 
         private ApplicationConfig appConfig;
+        private static bool _isdemo = false;
+        private MotionController _m114 = new MotionController(_isdemo);
 
-        private MotionController _m114 = new MotionController(true);
-
-        IOCardWrapper pCE_D122Wrapper = new IOCardWrapper(true);
+       IOCardWrapper pCE_D122Wrapper = new IOCardWrapper(_isdemo);
 
         public Form1()
         {
@@ -42,7 +42,7 @@ namespace PQCDEMO
             axisYController.UpdateTextBoxGroup(startY + (textBoxHeight + gap)); // 16 TextBoxes per axis
             axisZController.UpdateTextBoxGroup(startY + (textBoxHeight + gap) * 2);
 
-            LoadConfig();
+          LoadConfig();
             /*
             _inputbtn = new List<Button>();
             for (byte bitNo = 0; bitNo < 16; bitNo++)
@@ -225,7 +225,8 @@ namespace PQCDEMO
         };
 
             bool allFunctionsActive = axisXController.AreAllFunctionsActive(functionPositionsToCheck);
-
+            bool allFunctionsActive2 = axisYController.AreAllFunctionsActive(functionPositionsToCheck);
+            bool allFunctionsActive3 = axisZController.AreAllFunctionsActive(functionPositionsToCheck);
             int axisStatus = 0;
             foreach (int position in functionPositionsToCheck)
             {
