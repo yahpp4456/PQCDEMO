@@ -7,6 +7,31 @@ using System.Threading.Tasks;
 namespace PQCDEMO
 {
 
+    public class MainConfig
+    {
+        public IOBoardConfig IOConfig { get; set; }
+        public List<AxisConfig> AxisConfigs { get; set; }
+
+        public MainConfig()
+        {
+            IOConfig = new IOBoardConfig();
+            AxisConfigs = new List<AxisConfig>();
+        }
+    }
+
+    public class AxisConfig
+    {
+        public string AxisName { get; set; }
+        public UInt16 AxisStatus { get; set; }
+
+        public AxisConfig(string axisName, UInt16 axisStatus)
+        {
+            AxisName = axisName;
+            AxisStatus = axisStatus;
+        }
+    }
+
+
     public class IOBoardConfig
     {
         public List<IOItem> Inputs { get; set; }

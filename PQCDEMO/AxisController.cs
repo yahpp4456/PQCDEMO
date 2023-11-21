@@ -18,13 +18,6 @@ namespace PQCDEMO
         public List<TextBox> TextBoxes { get; private set; }
         public GroupBox GroupBox { get; private set; }
 
-        /*
-        public string AxisName { get; private set; }
-        public List<TextBox> TextBoxes { get; private set; }
-        public UInt16 Status { get; private set; } // 属性用于存储轴状态
-       */
-
-
 
 
         private static readonly Dictionary<int, string> defaultBitMeaningMapping = new Dictionary<int, string>
@@ -64,7 +57,7 @@ namespace PQCDEMO
             {
                 TextBox textBox = new TextBox
                 {
-                    Size = new Size(30, 30),
+                    Size = new Size(50, 30),
                     ReadOnly = true,
                     TextAlign = HorizontalAlignment.Center,
                     Cursor = Cursors.Default
@@ -79,7 +72,7 @@ namespace PQCDEMO
             for (int i = 0; i < TextBoxes.Count; i++)
             {
                 TextBox textBox = TextBoxes[i];
-                textBox.Location = new Point((i + 1) * 35 - 30, startY); // 修改位置
+                textBox.Location = new Point((i + 1) * 120-100, startY); // 修改位置
                 textBox.Name = $"{AxisName}info{i}";
                 textBox.Text = $"{AxisName} {defaultBitMeaningMapping[i]}";
             }
@@ -105,7 +98,10 @@ namespace PQCDEMO
 
         private void UpdateAxisStatus()
         {
-       
+            if (GroupBox.InvokeRequired)
+            {
+                GroupBox.Invoke(new Action(UpdateAxisStatus));
+            }
             for (int i = 0; i < TextBoxes.Count; i++)
             {
                 bool isActive = IsFunctionActive(i);

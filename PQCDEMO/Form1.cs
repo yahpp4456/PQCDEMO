@@ -16,13 +16,13 @@ namespace PQCDEMO
         private AxisController axisXController;
         private AxisController axisYController;
         private AxisController axisZController;
-        private List<Button> _inputbtn;
+
 
         private ApplicationConfig appConfig;
-        private static bool _isdemo = false;
+        private static bool _isdemo = true;
         private MotionController _m114 = new MotionController(_isdemo);
 
-       IOCardWrapper pCE_D122Wrapper = new IOCardWrapper(_isdemo);
+        IOCardWrapper pCE_D122Wrapper = new IOCardWrapper(_isdemo);
 
         public Form1()
         {
@@ -33,8 +33,8 @@ namespace PQCDEMO
             axisYController = new AxisController("Y", _m114, 1, groupBox1);
             axisZController = new AxisController("Z", _m114, 2, groupBox1);
 
-            int startY = 30; // Starting Y position for the first axis
-            int gap = 5; // Gap between each group of TextBoxes
+            int startY = 80; // Starting Y position for the first axis
+            int gap = 50; // Gap between each group of TextBoxes
             int textBoxHeight = 30;
 
             // 更新文本框組
@@ -42,23 +42,8 @@ namespace PQCDEMO
             axisYController.UpdateTextBoxGroup(startY + (textBoxHeight + gap)); // 16 TextBoxes per axis
             axisZController.UpdateTextBoxGroup(startY + (textBoxHeight + gap) * 2);
 
-          LoadConfig();
-            /*
-            _inputbtn = new List<Button>();
-            for (byte bitNo = 0; bitNo < 16; bitNo++)
-            {
-                Button btn = new Button
-                {
-                    Size = new Size(30,30)
-                };
-               btn.Text = $"Input {bitNo}: {pCE_D122Wrapper.ReadInputBit(bitNo)}";
-                btn.Location = new Point(10+bitNo*35, 55);
-                btn.BackColor = pCE_D122Wrapper.ReadInputBit(bitNo)? Color.LightGreen : Color.Red;
-                _inputbtn.Add(btn);
-                groupBox2.Controls.Add(btn); // 添加到 group2 中
-            }
+            // LoadConfig();
 
-           */
         }
 
         private void LoadConfig()
@@ -76,7 +61,7 @@ namespace PQCDEMO
                 string jsonConfig = System.IO.File.ReadAllText(openFileDialog.FileName);
                 appConfig = JsonConvert.DeserializeObject<ApplicationConfig>(jsonConfig);
             }
-            if (appConfig!=null)
+            if (appConfig != null)
             {
                 CreateButtons();
 
@@ -90,7 +75,7 @@ namespace PQCDEMO
             {
                 AutoScroll = true, // 启用滚动条
                 Location = new Point(10, 20), // 设置Panel的位置
-                Size = new Size(groupBox2.Width - pictureBox2.Width-20, groupBox2.Height - 50), // 设置Panel的大小
+                Size = new Size(groupBox2.Width - pictureBox2.Width - 20, groupBox2.Height - 50), // 设置Panel的大小
                 BorderStyle = BorderStyle.None // 为了清晰可见，给Panel设置一个边框
             };
 
@@ -114,7 +99,7 @@ namespace PQCDEMO
                 };
                 btn.Click += (sender, e) => InputButtonClick(input.Id);
                 bool inputState = pCE_D122Wrapper.ReadInputBit(input.Id);
-                btn.BackColor = inputState? Color.LightGreen : Color.Green; ;
+                btn.BackColor = inputState ? Color.LightGreen : Color.Green; ;
                 buttonPanel.Controls.Add(btn);
 
                 x += buttonWidth + padding;
@@ -205,12 +190,40 @@ namespace PQCDEMO
         {
             try
             {
-                test();
+                // getAxisStatus();
+                StartUpdatingThread();
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"發生錯誤: {ex.Message}", "錯誤", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+        public void StartUpdatingThread()
+        {
+            Thread updateThread = new Thread(UpdateStatusLoop);
+            updateThread.IsBackground = true; 
+            updateThread.Start();
+        }
+
+        // 定期更新状态的循环
+        private void UpdateStatusLoop()
+        {
+            while (true) 
+            {
+
+                getAxisStatus();
+
+                Thread.Sleep(100);
+            }
+        }
+
+        void getAxisStatus()
+        {
+
+            axisXController.UpdateStatus();
+            axisYController.UpdateStatus();
+            axisZController.UpdateStatus();
+
         }
         void test()
         {
@@ -243,6 +256,36 @@ namespace PQCDEMO
 
         private void Form1_Load(object sender, EventArgs e)
         {
+
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+
+     
+            MainConfig mainConfig = new MainConfig();
+
+       
+            AxisConfig axis1Config = new AxisConfig (axisXController.AxisName, axisXController.AxisStatus);
+            AxisConfig axis2Config = new AxisConfig(axisYController.AxisName, axisYController.AxisStatus);
+            AxisConfig axis3Config = new AxisConfig(axisZController.AxisName, axisZController.AxisStatus);
+
+            mainConfig.AxisConfigs.Add(axis1Config);
+            mainConfig.AxisConfigs.Add(axis2Config);
+            mainConfig.AxisConfigs.Add(axis3Config);
+
+            string json = JsonConvert.SerializeObject(mainConfig);
+
+      
+            File.WriteAllText("config.json", json);
+
+   
+          /* string jsonFromFile = File.ReadAllText("config.json");
+            MainConfig deserializedConfig = JsonConvert.DeserializeObject<MainConfig>(jsonFromFile);
+
+       
+            IOBoardConfig ioBoardConfig = deserializedConfig.IOB;
+            List<AxisConfig> axisConfigs = deserializedConfig.AxisConfigs;*/
 
         }
     }
