@@ -55,12 +55,12 @@ namespace PQCDEMO
  
     public class ApplicationConfig
     {
-        public IOBoardConfig IOB { get; set; }
+        public IOBoardConfig IOConfig { get; set; }
 
         public ApplicationConfig()
         {
             // 初始化 IOBoardConfig
-            IOB = new IOBoardConfig();
+            IOConfig = new IOBoardConfig();
         }
     }
 
