@@ -6,6 +6,7 @@ using System.Drawing.Imaging;
 using System.Security.Cryptography;
 using System.Windows.Forms;
 using TPM;
+//using static System.Windows.Forms.VisualStyles.VisualStyleElement.Button;
 
 namespace PQCDEMO
 {
@@ -25,29 +26,62 @@ namespace PQCDEMO
 
         IOCardWrapper pCE_D122Wrapper = new IOCardWrapper(_isdemo);
 
+        GroupBox _xgroupBox ;
+        GroupBox _ygroupBox ;
+        GroupBox _zgroupBox ;
+   
         public Form1()
         {
 
             InitializeComponent();
             // 初始化軸物件
-            axisXController = new AxisController("X", _m114, 0, groupBox1);
-            axisYController = new AxisController("Y", _m114, 1, groupBox1);
-            axisZController = new AxisController("Z", _m114, 2, groupBox1);
+            // 創建groupBox1
+           _xgroupBox =  new GroupBox();
+            _xgroupBox.Text = "GroupBox1"; // 設定GroupBox的標題
+            _xgroupBox.Width = 200; // 設定GroupBox的寬度
+            _xgroupBox.Height = 100; // 設定GroupBox的高度
 
-            int startY = 80; // Starting Y position for the first axis
-            int gap = 50; // Gap between each group of TextBoxes
+            // 創建groupBox2
+            _ygroupBox = new GroupBox();
+            _ygroupBox.Text = "GroupBox2"; // 設定GroupBox的標題
+            _ygroupBox.Width = 200; // 設定GroupBox的寬度
+            _ygroupBox.Height = 100; // 設定GroupBox的高度
+
+            // 創建groupBox3
+           _zgroupBox = new GroupBox();
+            _zgroupBox.Text = "GroupBox3"; // 設定GroupBox的標題
+            _zgroupBox.Width = 200; // 設定GroupBox的寬度
+            _zgroupBox.Height = 100; // 設定GroupBox的高度
+
+            // 添加groupBox1到panel1
+            panel1.Controls.Add(_xgroupBox);
+
+            // 添加groupBox2到panel1
+            panel1.Controls.Add(_ygroupBox);
+
+            // 添加groupBox3到panel1
+            panel1.Controls.Add(_zgroupBox);
+
+            axisXController = new AxisController("X", _m114, 0, _xgroupBox);
+            axisYController = new AxisController("Y", _m114, 1, _ygroupBox);
+            axisZController = new AxisController("Z", _m114, 2, _zgroupBox);
+
+            int startY = 20; // Starting Y position for the first axis
+            int gap = 20; // Gap between each group of TextBoxes
             int textBoxHeight = 30;
 
             // 更新文本框組
             axisXController.UpdateTextBoxGroup(startY);
-            axisYController.UpdateTextBoxGroup(startY + (textBoxHeight + gap)); // 16 TextBoxes per axis
-            axisZController.UpdateTextBoxGroup(startY + (textBoxHeight + gap) * 2);
+            axisYController.UpdateTextBoxGroup(startY ); // 16 TextBoxes per axis
+            axisZController.UpdateTextBoxGroup(startY);
+            if (!_isdemo)
+            {
+                LoadConfig();
+            }
 
-            LoadConfig();
-            button3.Click += (sender, args) => ToggleGroup(groupBox7);
-            button4.Click += (sender, args) => ToggleGroup(groupBox8);
-            button5.Click += (sender, args) => ToggleGroup(groupBox9);
-            button6.Click += (sender, args) => ToggleGroup(groupBox10);
+            button3.Click += (sender, args) => ToggleGroup(_xgroupBox);
+            button4.Click += (sender, args) => ToggleGroup(_ygroupBox);
+            button5.Click += (sender, args) => ToggleGroup(_zgroupBox);
 
         }
 
@@ -63,14 +97,14 @@ namespace PQCDEMO
 
         private void AdjustGroupLayout()
         {
-           // panel1.SuspendLayout();
+            // panel1.SuspendLayout();
             // 重設面板的控件集合
             panel1.Controls.Clear();
             int maxPanelHeight = panel1.Height;
             // 創建一個臨時列表以按順序保持群組盒
             // 計算當前所有可見GroupBox的總高度
             int currentHeight = 0;
-            var groupBoxes = new List<GroupBox> { groupBox7, groupBox8, groupBox9, groupBox10 };
+            var groupBoxes = new List<GroupBox> { _xgroupBox, _ygroupBox, _zgroupBox };
 
             // 如果群組盒是可見的，按順序添加回面板，並將它們停靠在頂部
 
@@ -125,16 +159,17 @@ namespace PQCDEMO
 
             }
         }
-
+        Panel buttonPanel;
         private void CreateButtons()
         {
             // 创建一个Panel用于放置按钮
-            Panel buttonPanel = new Panel
+            buttonPanel = new Panel
             {
                 AutoScroll = true, // 启用滚动条
                 Location = new Point(10, 20), // 设置Panel的位置
                 Size = new Size(groupBox2.Width - pictureBox2.Width - 20, groupBox2.Height - 50), // 设置Panel的大小
                 BorderStyle = BorderStyle.None // 为了清晰可见，给Panel设置一个边框
+
             };
 
             groupBox2.Controls.Add(buttonPanel); // 将Panel添加到GroupBox
@@ -153,7 +188,8 @@ namespace PQCDEMO
                 {
                     Text = input.Name,
                     Size = new Size(buttonWidth, buttonHeight),
-                    Location = new Point(x, y)
+                    Location = new Point(x, y),
+                    Tag = input.Id // 设置按钮的Tag属性为ID
                 };
                 btn.Click += (sender, e) => InputButtonClick(input.Id);
                 bool inputState = pCE_D122Wrapper.ReadInputBit(input.Id);
@@ -194,6 +230,62 @@ namespace PQCDEMO
             }
         }
 
+
+        private void CheckAndUpdateIOStatus()
+        {
+            // 在這裡檢查IO狀態並更新按鈕的顏色
+            foreach (var input in mainConfig1.IOConfig.Inputs)
+            {
+                bool inputState = pCE_D122Wrapper.ReadInputBit(input.Id);
+                UpdateButtonColor(input.Id, inputState);
+            }
+
+            foreach (var output in mainConfig1.IOConfig.Outputs)
+            {
+                // 如果您需要檢查輸出的狀態，也可以在這裡添加相應的代碼
+            }
+        }
+
+        private void StartIOStatusCheckingThread()
+        {
+            // 創建一個新的執行緒
+            Thread ioThread = new Thread(() =>
+            {
+                while (true)
+                {
+                    // 檢查IO狀態並更新按鈕顏色
+                    CheckAndUpdateIOStatus();
+
+                    // 暫停一段時間，例如500毫秒，然後再次檢查
+                    Thread.Sleep(100);
+                }
+            });
+            ioThread.IsBackground = true;
+            // 啟動執行緒
+            ioThread.Start();
+        }
+        private void UpdateButtonColor(int id, bool state)
+        {
+            // 在这里更新按钮的颜色，根据IO状态
+            if (InvokeRequired)
+            {
+                // 如果需要在UI线程上更新按钮，请使用Invoke方法
+                Invoke(new Action(() => UpdateButtonColor(id, state)));
+            }
+            else
+            {
+                // 根据IO状态更新按钮的背景色
+                foreach (Control control in buttonPanel.Controls)
+                {
+                    if (control is Button button && (byte)button.Tag == id)
+                    {
+
+                        button.BackColor = state ? Color.LightGreen : Color.Green;
+                        break; // 找到匹配的按钮后退出循环
+                    }
+                }
+            }
+        }
         private void InputButtonClick(byte id)
         {
             bool state = pCE_D122Wrapper.ReadInputBit(id);
@@ -250,6 +342,7 @@ namespace PQCDEMO
             {
                 // getAxisStatus();
                 StartUpdatingThread();
+                StartIOStatusCheckingThread();
             }
             catch (Exception ex)
             {
@@ -344,6 +437,11 @@ namespace PQCDEMO
 
               IOBoardConfig ioBoardConfig = deserializedConfig.IOB;
               List<AxisConfig> axisConfigs = deserializedConfig.AxisConfigs;*/
+
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
 
         }
 
