@@ -6,7 +6,6 @@ using System.Drawing.Imaging;
 using System.Security.Cryptography;
 using System.Windows.Forms;
 using TPM;
-//using static System.Windows.Forms.VisualStyles.VisualStyleElement.Button;
 
 namespace PQCDEMO
 {
@@ -26,58 +25,29 @@ namespace PQCDEMO
 
         IOCardWrapper pCE_D122Wrapper = new IOCardWrapper(_isdemo);
 
-        GroupBox _xgroupBox ;
-        GroupBox _ygroupBox ;
-        GroupBox _zgroupBox ;
-   
         public Form1()
         {
 
             InitializeComponent();
             // 初始化軸物件
-            // 創建groupBox1
-           _xgroupBox =  new GroupBox();
-            _xgroupBox.Text = "GroupBox1"; // 設定GroupBox的標題
-            _xgroupBox.Width = 200; // 設定GroupBox的寬度
-            _xgroupBox.Height = 100; // 設定GroupBox的高度
+            axisXController = new AxisController("X", _m114, 0, groupBox1);
+            axisYController = new AxisController("Y", _m114, 1, groupBox1);
+            axisZController = new AxisController("Z", _m114, 2, groupBox1);
 
-            // 創建groupBox2
-            _ygroupBox = new GroupBox();
-            _ygroupBox.Text = "GroupBox2"; // 設定GroupBox的標題
-            _ygroupBox.Width = 200; // 設定GroupBox的寬度
-            _ygroupBox.Height = 100; // 設定GroupBox的高度
-
-            // 創建groupBox3
-           _zgroupBox = new GroupBox();
-            _zgroupBox.Text = "GroupBox3"; // 設定GroupBox的標題
-            _zgroupBox.Width = 200; // 設定GroupBox的寬度
-            _zgroupBox.Height = 100; // 設定GroupBox的高度
-
-            // 添加groupBox1到panel1
-            panel1.Controls.Add(_xgroupBox);
-
-            // 添加groupBox2到panel1
-            panel1.Controls.Add(_ygroupBox);
-
-            // 添加groupBox3到panel1
-            panel1.Controls.Add(_zgroupBox);
-
-            axisXController = new AxisController("X", _m114, 0, _xgroupBox);
-            axisYController = new AxisController("Y", _m114, 1, _ygroupBox);
-            axisZController = new AxisController("Z", _m114, 2, _zgroupBox);
-
-            int startY = 20; // Starting Y position for the first axis
-            int gap = 20; // Gap between each group of TextBoxes
+            int startY = 80; // Starting Y position for the first axis
+            int gap = 50; // Gap between each group of TextBoxes
             int textBoxHeight = 30;
 
             // 更新文本框組
             axisXController.UpdateTextBoxGroup(startY);
-            axisYController.UpdateTextBoxGroup(startY ); // 16 TextBoxes per axis
-            axisZController.UpdateTextBoxGroup(startY);
-            if (!_isdemo)
-            {
-                LoadConfig();
-            }
+            axisYController.UpdateTextBoxGroup(startY + (textBoxHeight + gap)); // 16 TextBoxes per axis
+            axisZController.UpdateTextBoxGroup(startY + (textBoxHeight + gap) * 2);
+
+            LoadConfig();
+            button3.Click += (sender, args) => ToggleGroup(groupBox7);
+            button4.Click += (sender, args) => ToggleGroup(groupBox8);
+            button5.Click += (sender, args) => ToggleGroup(groupBox9);
+            button6.Click += (sender, args) => ToggleGroup(groupBox10);
 
             button3.Click += (sender, args) => ToggleGroup(_xgroupBox);
             button4.Click += (sender, args) => ToggleGroup(_ygroupBox);
@@ -104,7 +74,7 @@ namespace PQCDEMO
             // 創建一個臨時列表以按順序保持群組盒
             // 計算當前所有可見GroupBox的總高度
             int currentHeight = 0;
-            var groupBoxes = new List<GroupBox> { _xgroupBox, _ygroupBox, _zgroupBox };
+            var groupBoxes = new List<GroupBox> { groupBox7, groupBox8, groupBox9, groupBox10 };
 
             // 如果群組盒是可見的，按順序添加回面板，並將它們停靠在頂部
 
@@ -280,12 +250,6 @@ namespace PQCDEMO
                     if (control is Button button && (byte)button.Tag == id)
                     {
 
-                        button.BackColor = state ? Color.LightGreen : Color.Green;
-                        break; // 找到匹配的按钮后退出循环
-                    }
-                }
-            }
-        }
         private void InputButtonClick(byte id)
         {
             bool state = pCE_D122Wrapper.ReadInputBit(id);
