@@ -9,6 +9,7 @@ using System.Security.Cryptography;
 using System.Windows.Forms;
 using TPM;
 using System.Configuration;
+using System.Xml.Linq;
 
 namespace PQCDEMO
 {
@@ -422,7 +423,6 @@ namespace PQCDEMO
             }
 
             Process.Start("explorer.exe", targetFilePath);
-
         }
 
         private string GetFileUrl(FileInfo file)
@@ -470,6 +470,35 @@ namespace PQCDEMO
             {
                 File.Copy(sourceFilePath + name, $"{targetUrl}/{name}");
             }
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            var str1 = ReadXmlString($"{sourceFilePath}/MData.xml");
+            var str2 = ReadXmlString($"{sourceFilePath}/MData_Modify.xml");
+            var bl = mappingConfigXml(str1, str2);
+
+            if (bl)
+                button5.BackColor = Color.GreenYellow;
+        }
+
+
+        private string ReadXmlString(string xmlFilePath)
+        {
+            // 讀取 XML 檔案並解析為 XDocument
+            XDocument xmlDoc = XDocument.Load(xmlFilePath);
+            return xmlDoc.ToString();
+        }
+
+        private bool mappingConfigXml(string xmlString1, string xmlString2)
+        {
+            XDocument xmlDoc1 = XDocument.Parse(xmlString1);
+            XDocument xmlDoc2 = XDocument.Parse(xmlString2);
+
+            bool areEqual = XNode.DeepEquals(xmlDoc1, xmlDoc2);
+
+            return areEqual;
+
         }
 
         /*private void panel1_Paint(object sender, PaintEventArgs e)
