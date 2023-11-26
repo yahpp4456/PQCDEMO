@@ -1,11 +1,14 @@
 ﻿using Newtonsoft.Json;
 using PQCDEMO.Properties;
+using System;
 using System.Diagnostics;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
+using System.IO;
 using System.Security.Cryptography;
 using System.Windows.Forms;
 using TPM;
+using System.Configuration;
 
 namespace PQCDEMO
 {
@@ -24,6 +27,11 @@ namespace PQCDEMO
         private MotionController _m114 = new MotionController(_isdemo);
 
         IOCardWrapper pCE_D122Wrapper = new IOCardWrapper(_isdemo);
+
+        //資料來源
+        string sourceFilePath = System.Configuration.ConfigurationManager.AppSettings["sourceFilePath"];
+        //目的位置
+        string targetFilePath = System.Configuration.ConfigurationManager.AppSettings["targetFilePath"];
 
         public Form1()
         {
@@ -44,14 +52,14 @@ namespace PQCDEMO
             axisZController.UpdateTextBoxGroup(startY + (textBoxHeight + gap) * 2);
 
             LoadConfig();
-            button3.Click += (sender, args) => ToggleGroup(groupBox7);
-            button4.Click += (sender, args) => ToggleGroup(groupBox8);
-            button5.Click += (sender, args) => ToggleGroup(groupBox9);
-            button6.Click += (sender, args) => ToggleGroup(groupBox10);
+            //button3.Click += (sender, args) => ToggleGroup(groupBox7);
+            //button4.Click += (sender, args) => ToggleGroup(groupBox8);
+            //button5.Click += (sender, args) => ToggleGroup(groupBox9);
+            //button6.Click += (sender, args) => ToggleGroup(groupBox10);
 
-            button3.Click += (sender, args) => ToggleGroup(_xgroupBox);
-            button4.Click += (sender, args) => ToggleGroup(_ygroupBox);
-            button5.Click += (sender, args) => ToggleGroup(_zgroupBox);
+            //button3.Click += (sender, args) => ToggleGroup(_xgroupBox);
+            //button4.Click += (sender, args) => ToggleGroup(_ygroupBox);
+            //button5.Click += (sender, args) => ToggleGroup(_zgroupBox);
 
         }
 
@@ -74,8 +82,8 @@ namespace PQCDEMO
             // 創建一個臨時列表以按順序保持群組盒
             // 計算當前所有可見GroupBox的總高度
             int currentHeight = 0;
-            var groupBoxes = new List<GroupBox> { groupBox7, groupBox8, groupBox9, groupBox10 };
-
+            var groupBoxes = new List<GroupBox> { groupBox1 };
+            //groupBox7, groupBox8, groupBox9, groupBox10
             // 如果群組盒是可見的，按順序添加回面板，並將它們停靠在頂部
 
             foreach (var groupBox in groupBoxes)
@@ -207,7 +215,7 @@ namespace PQCDEMO
             foreach (var input in mainConfig1.IOConfig.Inputs)
             {
                 bool inputState = pCE_D122Wrapper.ReadInputBit(input.Id);
-                UpdateButtonColor(input.Id, inputState);
+                //UpdateButtonColor(input.Id, inputState);
             }
 
             foreach (var output in mainConfig1.IOConfig.Outputs)
@@ -234,21 +242,21 @@ namespace PQCDEMO
             // 啟動執行緒
             ioThread.Start();
         }
-        private void UpdateButtonColor(int id, bool state)
-        {
-            // 在这里更新按钮的颜色，根据IO状态
-            if (InvokeRequired)
-            {
-                // 如果需要在UI线程上更新按钮，请使用Invoke方法
-                Invoke(new Action(() => UpdateButtonColor(id, state)));
-            }
-            else
-            {
-                // 根据IO状态更新按钮的背景色
-                foreach (Control control in buttonPanel.Controls)
-                {
-                    if (control is Button button && (byte)button.Tag == id)
-                    {
+        //private void UpdateButtonColor(int id, bool state)
+        //{
+        //    // 在这里更新按钮的颜色，根据IO状态
+        //    if (InvokeRequired)
+        //    {
+        //        // 如果需要在UI线程上更新按钮，请使用Invoke方法
+        //        Invoke(new Action(() => UpdateButtonColor(id, state)));
+        //    }
+        //    else
+        //    {
+        //        // 根据IO状态更新按钮的背景色
+        //        foreach (Control control in buttonPanel.Controls)
+        //        {
+        //            if (control is Button button && (byte)button.Tag == id)
+        //            {
 
         private void InputButtonClick(byte id)
         {
@@ -404,9 +412,64 @@ namespace PQCDEMO
 
         }
 
-        private void button3_Click(object sender, EventArgs e)
+        private void button3_Click_1(object sender, EventArgs e)
         {
+            DirectoryInfo root = new DirectoryInfo(sourceFilePath);
+            foreach (FileInfo file in root.GetFiles())
+            {
+                var path = GetFileUrl(file);
+                MoveFile(path, file.Name);
+            }
 
+            Process.Start("explorer.exe", targetFilePath);
+
+        }
+
+        private string GetFileUrl(FileInfo file)
+        {
+            var result = targetFilePath;
+            if (file.Extension == ".html")
+            {
+                if (Path.GetFileNameWithoutExtension(file.Name).Length > 19)
+                {
+                    result = $"{result}ProjectSummaryLog";
+                }
+                else
+                {
+                    result = $"{result}ClientLog";
+                }
+            }
+            else if (file.Extension == ".log")
+            {
+                if (file.Name.Contains("Dediprog"))
+                {
+                    result = $"{result}ServerLog";
+                }
+                else if (file.Name.Contains("Programmer"))
+                {
+                    result = $"{result}FirmwareLog";
+                }
+                else if (file.Name.Contains("DediNetLinker"))
+                {
+                    result = $"{result}DediNetLinkerLog";
+                }
+            }
+
+            return result;
+        }
+
+        private void MoveFile(string targetUrl, string name)
+        {
+            if (!Directory.Exists(targetUrl))
+            {
+                Directory.CreateDirectory(targetUrl);
+
+                File.Copy(sourceFilePath + name, $"{targetUrl}/{name}");
+            }
+            else
+            {
+                File.Copy(sourceFilePath + name, $"{targetUrl}/{name}");
+            }
         }
 
         /*private void panel1_Paint(object sender, PaintEventArgs e)
