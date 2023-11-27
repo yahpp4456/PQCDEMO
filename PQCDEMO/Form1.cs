@@ -441,7 +441,7 @@ namespace PQCDEMO
             }
             else if (file.Extension == ".log")
             {
-                if (file.Name.Contains("Dediprog"))
+                if (file.Name.Contains("DediProg"))
                 {
                     result = $"{result}ServerLog";
                 }
