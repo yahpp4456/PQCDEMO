@@ -243,21 +243,28 @@ namespace PQCDEMO
             // 啟動執行緒
             ioThread.Start();
         }
-        //private void UpdateButtonColor(int id, bool state)
-        //{
-        //    // 在这里更新按钮的颜色，根据IO状态
-        //    if (InvokeRequired)
-        //    {
-        //        // 如果需要在UI线程上更新按钮，请使用Invoke方法
-        //        Invoke(new Action(() => UpdateButtonColor(id, state)));
-        //    }
-        //    else
-        //    {
-        //        // 根据IO状态更新按钮的背景色
-        //        foreach (Control control in buttonPanel.Controls)
-        //        {
-        //            if (control is Button button && (byte)button.Tag == id)
-        //            {
+        private void UpdateButtonColor(int id, bool state)
+        {
+            // 在这里更新按钮的颜色，根据IO状态
+            if (InvokeRequired)
+            {
+                // 如果需要在UI线程上更新按钮，请使用Invoke方法
+                Invoke(new Action(() => UpdateButtonColor(id, state)));
+            }
+            else
+            {
+                // 根据IO状态更新按钮的背景色
+                foreach (Control control in buttonPanel.Controls)
+                {
+                    if (control is Button button && (byte)button.Tag == id)
+                    {
+
+                        button.BackColor = state ? Color.LightGreen : Color.Green;
+                        break; // 找到匹配的按钮后退出循环
+                    }
+                }
+            }
+        }
 
         private void InputButtonClick(byte id)
         {
