@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using TPM;
 using System.Configuration;
 using System.Xml.Linq;
+using PQCDEMO.Model;
 
 namespace PQCDEMO
 {
@@ -34,6 +35,7 @@ namespace PQCDEMO
         //目的位置
         string targetFilePath = System.Configuration.ConfigurationManager.AppSettings["targetFilePath"];
 
+        string needDataPeriod = System.Configuration.ConfigurationManager.AppSettings["needDataPeriod"];
         public Form1()
         {
 
@@ -423,45 +425,76 @@ namespace PQCDEMO
         private void button3_Click_1(object sender, EventArgs e)
         {
             DirectoryInfo root = new DirectoryInfo(sourceFilePath);
-            foreach (FileInfo file in root.GetFiles())
+
+            var needFileList = GetNeedFile(root);
+            foreach (var data in needFileList)
             {
-                var path = GetFileUrl(file);
-                MoveFile(path, file.Name);
+                MoveFile(data.targetUrl, data.fileName);
             }
 
             Process.Start("explorer.exe", targetFilePath);
         }
 
-        private string GetFileUrl(FileInfo file)
+
+        private List<LogFileInfo> GetNeedFile(DirectoryInfo root)
         {
-            var result = targetFilePath;
-            if (file.Extension == ".html")
+            var result = new List<LogFileInfo>();
+            var period = int.Parse(needDataPeriod);
+
+            foreach (FileInfo file in root.GetFiles())
             {
-                if (Path.GetFileNameWithoutExtension(file.Name).Length > 19)
+                var data = new LogFileInfo();
+                if (file.Extension == ".html")
                 {
-                    result = $"{result}ProjectSummaryLog";
+                    var timeStr = file.Name.Substring(0, 10);
+                    if (DateTime.Now.AddDays(-period).Date > DateTime.Parse(timeStr) || DateTime.Parse(timeStr) > DateTime.Now.Date)
+                    {
+                        continue;
+                    }
+
+                    if (Path.GetFileNameWithoutExtension(file.Name).Length > 19)
+                    {
+                        data.targetUrl = $"{targetFilePath}ProjectSummaryLog";
+                    }
+                    else
+                    {
+                        data.targetUrl = $"{targetFilePath}ClientLog";
+                    }
+
+                    data.fileName = file.Name;
+                }
+                else if (file.Extension == ".log")
+                {
+                    var timeStr = "";
+
+                    if (file.Name.Contains("DediProg"))
+                    {
+                        timeStr = file.Name.Substring(9, 10);
+                        data.targetUrl = $"{targetFilePath}ServerLog";
+                    }
+                    else if (file.Name.Contains("Programmer"))
+                    {
+                        timeStr = file.Name.Substring(12, 10);
+                        data.targetUrl = $"{targetFilePath}FirmwareLog";
+                    }
+                    else if (file.Name.Contains("DediNetLinker"))
+                    {
+                        timeStr = file.Name.Substring(14, 10);
+                        data.targetUrl = $"{targetFilePath}DediNetLinkerLog";
+                    }
+
+                    if (DateTime.Now.AddDays(-period).Date > DateTime.Parse(timeStr) || DateTime.Parse(timeStr) > DateTime.Now.Date)
+                    {
+                        continue;
+                    }
+                    data.fileName = file.Name;
                 }
                 else
                 {
-                    result = $"{result}ClientLog";
+                    continue;
                 }
+                result.Add(data);
             }
-            else if (file.Extension == ".log")
-            {
-                if (file.Name.Contains("DediProg"))
-                {
-                    result = $"{result}ServerLog";
-                }
-                else if (file.Name.Contains("Programmer"))
-                {
-                    result = $"{result}FirmwareLog";
-                }
-                else if (file.Name.Contains("DediNetLinker"))
-                {
-                    result = $"{result}DediNetLinkerLog";
-                }
-            }
-
             return result;
         }
 
