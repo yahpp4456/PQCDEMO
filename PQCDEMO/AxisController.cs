@@ -29,10 +29,10 @@ namespace PQCDEMO
         { 4, "ORG" },
         { 5, "DIR" },
         { 6, "EMG" },
-        { 7, "Reserved" },
+        { 7, "N/A" },
         { 8, "ERC" },
         { 9, "EZ" },
-        { 10, "Reserved" },
+        { 10, "N/A" },
         { 11, "Latch" },
         { 12, "SD" },
         { 13, "INP" },
@@ -44,6 +44,7 @@ namespace PQCDEMO
         public AxisController(string axisName, MotionController motionCtl, ushort axisNumber,GroupBox groupBox)
         {
             AxisName = axisName;
+            groupBox.Text= axisName;
             AxisNumber = axisNumber;
             motionController = motionCtl;
             GroupBox = groupBox;
@@ -57,10 +58,11 @@ namespace PQCDEMO
             {
                 TextBox textBox = new TextBox
                 {
-                    Size = new Size(50, 30),
+                    Size = new Size(50,50),
                     ReadOnly = true,
                     TextAlign = HorizontalAlignment.Center,
-                    Cursor = Cursors.Default
+                    Cursor = Cursors.Default,
+                         
                 };
                 GroupBox.Controls.Add(textBox);
                 TextBoxes.Add(textBox);
@@ -69,15 +71,28 @@ namespace PQCDEMO
 
         public void UpdateTextBoxGroup(int startY)
         {
+            int xOffset = 10;
+            int yOffset = 0;
+            const int textBoxWidth = 50;
+            const int textBoxHeight = 50;
+
             for (int i = 0; i < TextBoxes.Count; i++)
             {
                 TextBox textBox = TextBoxes[i];
-                textBox.Location = new Point((i + 1) * 120-100, startY); // 修改位置
+
+                // 如果超出容器宽度，换行
+                if (xOffset + textBoxWidth > GroupBox.Width)
+                {
+                    xOffset = 10;
+                    yOffset += textBoxHeight; // 增加垂直间距
+                }
+
+                textBox.Location = new Point(xOffset, yOffset + startY);
                 textBox.Name = $"{AxisName}info{i}";
-                textBox.Text = $"{AxisName} {defaultBitMeaningMapping[i]}";
+                textBox.Text = $"{defaultBitMeaningMapping[i]}";
+                xOffset += textBoxWidth;
             }
         }
-
 
         public void UpdateStatus()
         {

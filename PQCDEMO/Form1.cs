@@ -11,6 +11,7 @@ using TPM;
 using System.Configuration;
 using System.Xml.Linq;
 using PQCDEMO.Model;
+using static System.Windows.Forms.AxHost;
 
 namespace PQCDEMO
 {
@@ -41,53 +42,97 @@ namespace PQCDEMO
 
             InitializeComponent();
             // 初始化軸物件
-            axisXController = new AxisController("X", _m114, 0, groupBox1);
-            axisYController = new AxisController("Y", _m114, 1, groupBox1);
-            axisZController = new AxisController("Z", _m114, 2, groupBox1);
+            groupBox_axis.Visible = false;
+            axisgroup(groupBox_axis);
 
-            int startY = 80; // Starting Y position for the first axis
-            int gap = 50; // Gap between each group of TextBoxes
-            int textBoxHeight = 30;
-
-            // 更新文本框組
-            axisXController.UpdateTextBoxGroup(startY);
-            axisYController.UpdateTextBoxGroup(startY + (textBoxHeight + gap)); // 16 TextBoxes per axis
-            axisZController.UpdateTextBoxGroup(startY + (textBoxHeight + gap) * 2);
 
             LoadConfig();
-            //button3.Click += (sender, args) => ToggleGroup(groupBox7);
-            //button4.Click += (sender, args) => ToggleGroup(groupBox8);
-            //button5.Click += (sender, args) => ToggleGroup(groupBox9);
-            //button6.Click += (sender, args) => ToggleGroup(groupBox10);
 
-            //button3.Click += (sender, args) => ToggleGroup(_xgroupBox);
-            //button4.Click += (sender, args) => ToggleGroup(_ygroupBox);
-            //button5.Click += (sender, args) => ToggleGroup(_zgroupBox);
 
         }
+        string[] texts = { "X", "Y", "Z" };
+        private void axisgroup(GroupBox groupBox)
+        {
+            int startY = 30; // Starting Y position for the first axis
+            for (int i = 0; i < 3; i++)
+            {
+                GroupBox newGroupBox = new GroupBox
+                {
+                    Location = new Point(groupBox.Location.X, groupBox.Location.Y + (i + 1) * (groupBox.Height + 10)), // 调整Y坐标以防止重叠
+                    Size = groupBox.Size,
+                    Text = groupBox.Text,
+                    Font = groupBox.Font,
+                    ForeColor = groupBox.ForeColor,
+                    BackColor = groupBox.BackColor,
+                    Visible = groupBox.Visible,
+                    Dock = groupBox.Dock,
+                    Parent = panel1 // 设置父容器，这里假设你的控件容器是Form
+                };
+                groupBoxes.Add(newGroupBox);
+                switch (i)
+                {
+                    case 0:
+                        axisXController = new AxisController("X", _m114, 0, newGroupBox);
+                        axisXController.UpdateTextBoxGroup(startY);
+                        button_X.Click += (sender, args) => ToggleGroup(newGroupBox);
+
+                        break;
+                    case 1:
+                        axisYController = new AxisController("Y", _m114, 1, newGroupBox);
+                        axisYController.UpdateTextBoxGroup(startY);
+                        button_Y.Click += (sender, args) => ToggleGroup(newGroupBox);
+                        break;
+                    case 2:
+                        axisZController = new AxisController("Z", _m114, 2, newGroupBox);
+                        axisZController.UpdateTextBoxGroup(startY);
+                        button_Z.Click += (sender, args) => ToggleGroup(newGroupBox);
+                        break;
+
+                    default:
+                        break;
+                }
 
 
+            }
+
+        }
         private void ToggleGroup(GroupBox groupBox)
         {
+
+
             // Toggle visibility of the group
             groupBox.Visible = !groupBox.Visible;
 
             // Adjust the layout of visible groups
-            AdjustGroupLayout();
+            Thread thread = new Thread(AdjustGroupLayoutThread);
+            thread.Start();
+
+
+        }
+        private void AdjustGroupLayoutThread()
+        {
+            // Check if we are on the UI thread
+            if (InvokeRequired)
+            {
+                // We are not on the UI thread, so use Invoke to call AdjustGroupLayout
+                Invoke(new Action(AdjustGroupLayout));
+            }
+            else
+            {
+                // We are on the UI thread, so call AdjustGroupLayout directly
+                AdjustGroupLayout();
+            }
         }
 
+        List<GroupBox> groupBoxes = new List<GroupBox> { };
         private void AdjustGroupLayout()
         {
-            // panel1.SuspendLayout();
-            // 重設面板的控件集合
+            panel1.SuspendLayout();
             panel1.Controls.Clear();
             int maxPanelHeight = panel1.Height;
-            // 創建一個臨時列表以按順序保持群組盒
             // 計算當前所有可見GroupBox的總高度
             int currentHeight = 0;
-            var groupBoxes = new List<GroupBox> { groupBox1 };
-            //groupBox7, groupBox8, groupBox9, groupBox10
-            // 如果群組盒是可見的，按順序添加回面板，並將它們停靠在頂部
+
 
             foreach (var groupBox in groupBoxes)
             {
@@ -106,7 +151,7 @@ namespace PQCDEMO
                     else
                     {
                         // 設置Dock屬性為DockStyle.Top，將群組盒停靠在面板頂部
-                        groupBox.Dock = DockStyle.Top;
+                        //groupBox.Dock = DockStyle.Top;
                         panel1.Controls.Add(groupBox);
                         groupBox.BringToFront();
 
@@ -115,9 +160,10 @@ namespace PQCDEMO
                     }
                 }
             }
-            //  panel1.ResumeLayout();
-            //   panel1.Refresh();   
+            panel1.ResumeLayout(true);
         }
+
+
 
         private void LoadConfig()
         {
