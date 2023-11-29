@@ -45,9 +45,7 @@ namespace PQCDEMO
             groupBox_axis.Visible = false;
             axisgroup(groupBox_axis);
 
-
             LoadConfig();
-
 
         }
         string[] texts = { "X", "Y", "Z" };
@@ -99,13 +97,15 @@ namespace PQCDEMO
         private void ToggleGroup(GroupBox groupBox)
         {
 
-
+            groupBox.SuspendLayout();
             // Toggle visibility of the group
             groupBox.Visible = !groupBox.Visible;
 
             // Adjust the layout of visible groups
-            Thread thread = new Thread(AdjustGroupLayoutThread);
-            thread.Start();
+            //Thread thread = new Thread(AdjustGroupLayoutThread);
+            //thread.Start();
+            AdjustGroupLayout();
+            groupBox.ResumeLayout(true);
 
 
         }
@@ -161,17 +161,73 @@ namespace PQCDEMO
                 }
             }
             panel1.ResumeLayout(true);
+
         }
+
+        //private void AdjustGroupLayout()
+        //{
+        //    panel1.SuspendLayout();
+
+        //    int maxPanelHeight = panel1.Height;
+
+        //    // 創建字典來按可見度分組GroupBoxes
+        //    Dictionary<bool, List<GroupBox>> groupedGroupBoxes = new Dictionary<bool, List<GroupBox>>();
+
+        //    foreach (var groupBox in groupBoxes)
+        //    {
+        //        bool isVisible = groupBox.Visible;
+        //        if (!groupedGroupBoxes.ContainsKey(isVisible))
+        //        {
+        //            groupedGroupBoxes[isVisible] = new List<GroupBox>();
+        //        }
+        //        groupedGroupBoxes[isVisible].Add(groupBox);
+        //    }
+
+        //    // 遍歷字典，按可見度將GroupBox添加到面板
+        //    foreach (var isVisible in groupedGroupBoxes.Keys)
+        //    {
+        //        int currentHeight = panel1.Controls.OfType<GroupBox>().Sum(g => g.Height);
+
+        //        foreach (var groupBox in groupedGroupBoxes[isVisible])
+        //        {
+        //            // 檢查GroupBox是否已經在panel1中
+        //            if (!panel1.Controls.Contains(groupBox))
+        //            {
+        //                int groupBoxHeight = groupBox.Height;
+
+        //                // 檢查加上這個GroupBox後的總高度是否會超過面板的最大高度
+        //                if (currentHeight + groupBoxHeight <= maxPanelHeight)
+        //                {
+        //                 //   groupBox.Dock = DockStyle.Top;
+        //                //    panel1.Controls.Add(groupBox);
+
+
+        //                    currentHeight += groupBoxHeight;
+        //                }
+        //                else
+        //                {
+        //                    break;
+        //                }
+        //            }
+        //        }
+        //    }
+
+        //    panel1.ResumeLayout(true);
+        //}
 
 
 
         private void LoadConfig()
         {
+            // 保存當前激活的窗口
+
             // 創建和配置 OpenFileDialog
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Title = "選擇配置文件";
             openFileDialog.Filter = "JSON文件 (*.json)|*.json"; // 篩選只顯示JSON文件
             openFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments); // 設置初始目錄
+
+
 
             // 顯示對話框
             if (openFileDialog.ShowDialog() == DialogResult.OK)
@@ -180,6 +236,8 @@ namespace PQCDEMO
                 string jsonConfig = System.IO.File.ReadAllText(openFileDialog.FileName);
                 mainConfig1 = JsonConvert.DeserializeObject<MainConfig>(jsonConfig);
             }
+
+
             if (mainConfig1 != null)
             {
                 CreateButtons();
@@ -584,6 +642,11 @@ namespace PQCDEMO
             bool areEqual = XNode.DeepEquals(xmlDoc1, xmlDoc2);
 
             return areEqual;
+
+        }
+
+        private void button2_Click_1(object sender, EventArgs e)
+        {
 
         }
 
