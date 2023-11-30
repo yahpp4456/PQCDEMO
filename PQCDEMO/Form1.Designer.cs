@@ -46,6 +46,49 @@
             groupBox6 = new GroupBox();
             button3 = new Button();
             button2 = new Button();
+            groupBox7 = new GroupBox();
+            panel2 = new Panel();
+            button4 = new Button();
+            button6 = new Button();
+            button7 = new Button();
+            panel7 = new Panel();
+            button17 = new Button();
+            button18 = new Button();
+            panel13 = new Panel();
+            button34 = new Button();
+            button35 = new Button();
+            button36 = new Button();
+            button37 = new Button();
+            panel3 = new Panel();
+            button8 = new Button();
+            button9 = new Button();
+            button10 = new Button();
+            button11 = new Button();
+            panel4 = new Panel();
+            button12 = new Button();
+            button13 = new Button();
+            button14 = new Button();
+            button15 = new Button();
+            panel5 = new Panel();
+            button38 = new Button();
+            button39 = new Button();
+            button40 = new Button();
+            button41 = new Button();
+            panel6 = new Panel();
+            button16 = new Button();
+            button19 = new Button();
+            panel8 = new Panel();
+            button20 = new Button();
+            button21 = new Button();
+            panel9 = new Panel();
+            button22 = new Button();
+            button23 = new Button();
+            panel10 = new Panel();
+            button24 = new Button();
+            button25 = new Button();
+            panel11 = new Panel();
+            button26 = new Button();
+            button27 = new Button();
             groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             groupBox2.SuspendLayout();
@@ -55,6 +98,18 @@
             groupBox5.SuspendLayout();
             panel1.SuspendLayout();
             groupBox6.SuspendLayout();
+            groupBox7.SuspendLayout();
+            panel2.SuspendLayout();
+            panel7.SuspendLayout();
+            panel13.SuspendLayout();
+            panel3.SuspendLayout();
+            panel4.SuspendLayout();
+            panel5.SuspendLayout();
+            panel6.SuspendLayout();
+            panel8.SuspendLayout();
+            panel9.SuspendLayout();
+            panel10.SuspendLayout();
+            panel11.SuspendLayout();
             SuspendLayout();
             // 
             // button1
@@ -186,27 +241,27 @@
             groupBox5.Controls.Add(panel1);
             groupBox5.Location = new Point(827, 18);
             groupBox5.Name = "groupBox5";
-            groupBox5.Size = new Size(435, 598);
+            groupBox5.Size = new Size(444, 598);
             groupBox5.TabIndex = 4;
             groupBox5.TabStop = false;
             groupBox5.Text = "機台Config";
             // 
             // panel1
             // 
+            panel1.Controls.Add(groupBox7);
             panel1.Controls.Add(groupBox_axis);
             panel1.Dock = DockStyle.Fill;
             panel1.Location = new Point(3, 23);
             panel1.Margin = new Padding(1);
             panel1.Name = "panel1";
-            panel1.Size = new Size(429, 572);
+            panel1.Size = new Size(438, 572);
             panel1.TabIndex = 0;
             // 
             // groupBox_axis
             // 
-            groupBox_axis.Dock = DockStyle.Top;
-            groupBox_axis.Location = new Point(0, 0);
+            groupBox_axis.Location = new Point(9, 454);
             groupBox_axis.Name = "groupBox_axis";
-            groupBox_axis.Size = new Size(429, 185);
+            groupBox_axis.Size = new Size(354, 114);
             groupBox_axis.TabIndex = 0;
             groupBox_axis.TabStop = false;
             groupBox_axis.Text = "axis";
@@ -214,6 +269,7 @@
             // groupBox6
             // 
             groupBox6.Controls.Add(button3);
+            groupBox6.FlatStyle = FlatStyle.System;
             groupBox6.Location = new Point(12, 471);
             groupBox6.Name = "groupBox6";
             groupBox6.Size = new Size(643, 145);
@@ -223,12 +279,14 @@
             // 
             // button3
             // 
+            button3.FlatStyle = FlatStyle.Popup;
+            button3.Font = new Font("Microsoft JhengHei UI", 20F, FontStyle.Regular, GraphicsUnit.Point);
             button3.Location = new Point(4, 24);
             button3.Margin = new Padding(1);
             button3.Name = "button3";
             button3.Size = new Size(474, 102);
             button3.TabIndex = 0;
-            button3.Text = "CopyLog";
+            button3.Text = "Get DediWareLog";
             button3.UseVisualStyleBackColor = true;
             button3.Click += button3_Click_1;
             // 
@@ -242,12 +300,476 @@
             button2.UseVisualStyleBackColor = true;
             button2.Click += button2_Click_1;
             // 
+            // groupBox7
+            // 
+            groupBox7.Controls.Add(panel11);
+            groupBox7.Controls.Add(panel10);
+            groupBox7.Controls.Add(panel9);
+            groupBox7.Controls.Add(panel8);
+            groupBox7.Controls.Add(panel6);
+            groupBox7.Controls.Add(panel5);
+            groupBox7.Controls.Add(panel4);
+            groupBox7.Controls.Add(panel3);
+            groupBox7.Controls.Add(panel13);
+            groupBox7.Controls.Add(panel7);
+            groupBox7.Controls.Add(panel2);
+            groupBox7.Dock = DockStyle.Fill;
+            groupBox7.Location = new Point(0, 0);
+            groupBox7.Name = "groupBox7";
+            groupBox7.Size = new Size(438, 572);
+            groupBox7.TabIndex = 1;
+            groupBox7.TabStop = false;
+            groupBox7.Text = "groupBox7";
+            groupBox7.Enter += groupBox7_Enter;
+            // 
+            // panel2
+            // 
+            panel2.Controls.Add(button7);
+            panel2.Controls.Add(button6);
+            panel2.Controls.Add(button4);
+            panel2.Dock = DockStyle.Top;
+            panel2.Location = new Point(3, 23);
+            panel2.Name = "panel2";
+            panel2.Size = new Size(432, 55);
+            panel2.TabIndex = 0;
+            // 
+            // button4
+            // 
+            button4.Dock = DockStyle.Left;
+            button4.Location = new Point(0, 0);
+            button4.Name = "button4";
+            button4.Size = new Size(94, 55);
+            button4.TabIndex = 0;
+            button4.Tag = "I00";
+            button4.Text = "EMG";
+            button4.UseVisualStyleBackColor = true;
+            // 
+            // button6
+            // 
+            button6.Dock = DockStyle.Left;
+            button6.Location = new Point(94, 0);
+            button6.Name = "button6";
+            button6.Size = new Size(94, 55);
+            button6.TabIndex = 1;
+            button6.Tag = "I01";
+            button6.Text = "Door";
+            button6.UseVisualStyleBackColor = true;
+            // 
+            // button7
+            // 
+            button7.Dock = DockStyle.Left;
+            button7.Location = new Point(188, 0);
+            button7.Name = "button7";
+            button7.Size = new Size(94, 55);
+            button7.TabIndex = 2;
+            button7.Tag = "I23";
+            button7.Text = "Air";
+            button7.UseVisualStyleBackColor = true;
+            // 
+            // panel7
+            // 
+            panel7.Controls.Add(button18);
+            panel7.Controls.Add(button17);
+            panel7.Location = new Point(6, 239);
+            panel7.Name = "panel7";
+            panel7.Size = new Size(134, 96);
+            panel7.TabIndex = 7;
+            // 
+            // button17
+            // 
+            button17.Dock = DockStyle.Top;
+            button17.Location = new Point(0, 0);
+            button17.Name = "button17";
+            button17.Size = new Size(134, 33);
+            button17.TabIndex = 0;
+            button17.Tag = "I12";
+            button17.Text = "下位";
+            button17.UseVisualStyleBackColor = true;
+            // 
+            // button18
+            // 
+            button18.Dock = DockStyle.Fill;
+            button18.Location = new Point(0, 33);
+            button18.Name = "button18";
+            button18.Size = new Size(134, 63);
+            button18.TabIndex = 8;
+            button18.Tag = "O25";
+            button18.Text = "壓制器";
+            button18.UseVisualStyleBackColor = true;
+            // 
+            // panel13
+            // 
+            panel13.Controls.Add(button37);
+            panel13.Controls.Add(button34);
+            panel13.Controls.Add(button35);
+            panel13.Controls.Add(button36);
+            panel13.Location = new Point(9, 87);
+            panel13.Name = "panel13";
+            panel13.Size = new Size(100, 140);
+            panel13.TabIndex = 11;
+            // 
+            // button34
+            // 
+            button34.Dock = DockStyle.Left;
+            button34.Location = new Point(0, 40);
+            button34.Name = "button34";
+            button34.Size = new Size(50, 60);
+            button34.TabIndex = 1;
+            button34.Tag = "O01";
+            button34.Text = "O01";
+            button34.UseVisualStyleBackColor = true;
+            button34.Click += button34_Click;
+            // 
+            // button35
+            // 
+            button35.Dock = DockStyle.Top;
+            button35.Location = new Point(0, 0);
+            button35.Name = "button35";
+            button35.Size = new Size(100, 40);
+            button35.TabIndex = 0;
+            button35.Tag = "I02";
+            button35.UseVisualStyleBackColor = true;
+            // 
+            // button36
+            // 
+            button36.Dock = DockStyle.Bottom;
+            button36.Location = new Point(0, 100);
+            button36.Name = "button36";
+            button36.Size = new Size(100, 40);
+            button36.TabIndex = 2;
+            button36.Tag = "I24";
+            button36.UseVisualStyleBackColor = true;
+            // 
+            // button37
+            // 
+            button37.Dock = DockStyle.Right;
+            button37.Location = new Point(50, 40);
+            button37.Name = "button37";
+            button37.Size = new Size(50, 60);
+            button37.TabIndex = 3;
+            button37.Tag = "O04";
+            button37.Text = "O04";
+            button37.TextAlign = ContentAlignment.MiddleLeft;
+            button37.UseVisualStyleBackColor = true;
+            // 
+            // panel3
+            // 
+            panel3.Controls.Add(button8);
+            panel3.Controls.Add(button9);
+            panel3.Controls.Add(button10);
+            panel3.Controls.Add(button11);
+            panel3.Location = new Point(115, 87);
+            panel3.Name = "panel3";
+            panel3.Size = new Size(100, 140);
+            panel3.TabIndex = 12;
+            // 
+            // button8
+            // 
+            button8.Dock = DockStyle.Right;
+            button8.Location = new Point(50, 40);
+            button8.Name = "button8";
+            button8.Size = new Size(50, 60);
+            button8.TabIndex = 3;
+            button8.Tag = "O05";
+            button8.Text = "真空";
+            button8.UseVisualStyleBackColor = true;
+            // 
+            // button9
+            // 
+            button9.Dock = DockStyle.Left;
+            button9.Location = new Point(0, 40);
+            button9.Name = "button9";
+            button9.Size = new Size(50, 60);
+            button9.TabIndex = 1;
+            button9.Tag = "O02";
+            button9.Text = "汽缸";
+            button9.UseVisualStyleBackColor = true;
+            // 
+            // button10
+            // 
+            button10.Dock = DockStyle.Top;
+            button10.Location = new Point(0, 0);
+            button10.Name = "button10";
+            button10.Size = new Size(100, 40);
+            button10.TabIndex = 0;
+            button10.Tag = "I03";
+            button10.Text = "上位";
+            button10.UseVisualStyleBackColor = true;
+            // 
+            // button11
+            // 
+            button11.Dock = DockStyle.Bottom;
+            button11.Location = new Point(0, 100);
+            button11.Name = "button11";
+            button11.Size = new Size(100, 40);
+            button11.TabIndex = 2;
+            button11.Tag = "I25";
+            button11.Text = "下位";
+            button11.UseVisualStyleBackColor = true;
+            // 
+            // panel4
+            // 
+            panel4.Controls.Add(button12);
+            panel4.Controls.Add(button13);
+            panel4.Controls.Add(button14);
+            panel4.Controls.Add(button15);
+            panel4.Location = new Point(221, 87);
+            panel4.Name = "panel4";
+            panel4.Size = new Size(100, 140);
+            panel4.TabIndex = 13;
+            // 
+            // button12
+            // 
+            button12.Dock = DockStyle.Right;
+            button12.Location = new Point(50, 40);
+            button12.Name = "button12";
+            button12.Size = new Size(50, 60);
+            button12.TabIndex = 3;
+            button12.Tag = "O06";
+            button12.UseVisualStyleBackColor = true;
+            // 
+            // button13
+            // 
+            button13.Dock = DockStyle.Left;
+            button13.Location = new Point(0, 40);
+            button13.Name = "button13";
+            button13.Size = new Size(50, 60);
+            button13.TabIndex = 1;
+            button13.Tag = "O03";
+            button13.UseVisualStyleBackColor = true;
+            // 
+            // button14
+            // 
+            button14.Dock = DockStyle.Top;
+            button14.Location = new Point(0, 0);
+            button14.Name = "button14";
+            button14.Size = new Size(100, 40);
+            button14.TabIndex = 0;
+            button14.Tag = "I04";
+            button14.UseVisualStyleBackColor = true;
+            // 
+            // button15
+            // 
+            button15.Dock = DockStyle.Bottom;
+            button15.Location = new Point(0, 100);
+            button15.Name = "button15";
+            button15.Size = new Size(100, 40);
+            button15.TabIndex = 2;
+            button15.Tag = "I26";
+            button15.UseVisualStyleBackColor = true;
+            // 
+            // panel5
+            // 
+            panel5.Controls.Add(button38);
+            panel5.Controls.Add(button39);
+            panel5.Controls.Add(button40);
+            panel5.Controls.Add(button41);
+            panel5.Location = new Point(327, 87);
+            panel5.Name = "panel5";
+            panel5.Size = new Size(100, 140);
+            panel5.TabIndex = 14;
+            // 
+            // button38
+            // 
+            button38.Dock = DockStyle.Right;
+            button38.Location = new Point(50, 40);
+            button38.Name = "button38";
+            button38.Size = new Size(50, 60);
+            button38.TabIndex = 3;
+            button38.Tag = "O07";
+            button38.UseVisualStyleBackColor = true;
+            // 
+            // button39
+            // 
+            button39.Dock = DockStyle.Left;
+            button39.Location = new Point(0, 40);
+            button39.Name = "button39";
+            button39.Size = new Size(50, 60);
+            button39.TabIndex = 1;
+            button39.Tag = "O04";
+            button39.UseVisualStyleBackColor = true;
+            // 
+            // button40
+            // 
+            button40.Dock = DockStyle.Top;
+            button40.Location = new Point(0, 0);
+            button40.Name = "button40";
+            button40.Size = new Size(100, 40);
+            button40.TabIndex = 0;
+            button40.Tag = "I05";
+            button40.UseVisualStyleBackColor = true;
+            // 
+            // button41
+            // 
+            button41.Dock = DockStyle.Bottom;
+            button41.Location = new Point(0, 100);
+            button41.Name = "button41";
+            button41.Size = new Size(100, 40);
+            button41.TabIndex = 2;
+            button41.Tag = "I27";
+            button41.UseVisualStyleBackColor = true;
+            // 
+            // panel6
+            // 
+            panel6.Controls.Add(button16);
+            panel6.Controls.Add(button19);
+            panel6.Location = new Point(6, 341);
+            panel6.Name = "panel6";
+            panel6.Size = new Size(134, 96);
+            panel6.TabIndex = 15;
+            // 
+            // button16
+            // 
+            button16.Dock = DockStyle.Fill;
+            button16.Location = new Point(0, 33);
+            button16.Name = "button16";
+            button16.Size = new Size(134, 63);
+            button16.TabIndex = 8;
+            button16.Tag = "O24";
+            button16.Text = "壓制器";
+            button16.UseVisualStyleBackColor = true;
+            // 
+            // button19
+            // 
+            button19.Dock = DockStyle.Top;
+            button19.Location = new Point(0, 0);
+            button19.Name = "button19";
+            button19.Size = new Size(134, 33);
+            button19.TabIndex = 0;
+            button19.Tag = "I11";
+            button19.Text = "下位";
+            button19.UseVisualStyleBackColor = true;
+            // 
+            // panel8
+            // 
+            panel8.Controls.Add(button20);
+            panel8.Controls.Add(button21);
+            panel8.Location = new Point(6, 443);
+            panel8.Name = "panel8";
+            panel8.Size = new Size(134, 96);
+            panel8.TabIndex = 9;
+            // 
+            // button20
+            // 
+            button20.Dock = DockStyle.Fill;
+            button20.Location = new Point(0, 33);
+            button20.Name = "button20";
+            button20.Size = new Size(134, 63);
+            button20.TabIndex = 8;
+            button20.Tag = "O23";
+            button20.Text = "壓制器";
+            button20.UseVisualStyleBackColor = true;
+            // 
+            // button21
+            // 
+            button21.Dock = DockStyle.Top;
+            button21.Location = new Point(0, 0);
+            button21.Name = "button21";
+            button21.Size = new Size(134, 33);
+            button21.TabIndex = 0;
+            button21.Tag = "I10";
+            button21.Text = "下位";
+            button21.UseVisualStyleBackColor = true;
+            // 
+            // panel9
+            // 
+            panel9.Controls.Add(button22);
+            panel9.Controls.Add(button23);
+            panel9.Location = new Point(151, 239);
+            panel9.Name = "panel9";
+            panel9.Size = new Size(134, 96);
+            panel9.TabIndex = 16;
+            // 
+            // button22
+            // 
+            button22.Dock = DockStyle.Fill;
+            button22.Location = new Point(0, 33);
+            button22.Name = "button22";
+            button22.Size = new Size(134, 63);
+            button22.TabIndex = 8;
+            button22.Tag = "O28";
+            button22.Text = "壓制器";
+            button22.UseVisualStyleBackColor = true;
+            // 
+            // button23
+            // 
+            button23.Dock = DockStyle.Top;
+            button23.Location = new Point(0, 0);
+            button23.Name = "button23";
+            button23.Size = new Size(134, 33);
+            button23.TabIndex = 0;
+            button23.Tag = "I15";
+            button23.Text = "下位";
+            button23.UseVisualStyleBackColor = true;
+            // 
+            // panel10
+            // 
+            panel10.Controls.Add(button24);
+            panel10.Controls.Add(button25);
+            panel10.Location = new Point(151, 341);
+            panel10.Name = "panel10";
+            panel10.Size = new Size(134, 96);
+            panel10.TabIndex = 17;
+            // 
+            // button24
+            // 
+            button24.Dock = DockStyle.Fill;
+            button24.Location = new Point(0, 33);
+            button24.Name = "button24";
+            button24.Size = new Size(134, 63);
+            button24.TabIndex = 8;
+            button24.Tag = "O27";
+            button24.Text = "壓制器";
+            button24.UseVisualStyleBackColor = true;
+            // 
+            // button25
+            // 
+            button25.Dock = DockStyle.Top;
+            button25.Location = new Point(0, 0);
+            button25.Name = "button25";
+            button25.Size = new Size(134, 33);
+            button25.TabIndex = 0;
+            button25.Tag = "I14";
+            button25.Text = "下位";
+            button25.UseVisualStyleBackColor = true;
+            // 
+            // panel11
+            // 
+            panel11.Controls.Add(button26);
+            panel11.Controls.Add(button27);
+            panel11.Location = new Point(151, 443);
+            panel11.Name = "panel11";
+            panel11.Size = new Size(134, 96);
+            panel11.TabIndex = 18;
+            // 
+            // button26
+            // 
+            button26.Dock = DockStyle.Fill;
+            button26.Location = new Point(0, 33);
+            button26.Name = "button26";
+            button26.Size = new Size(134, 63);
+            button26.TabIndex = 8;
+            button26.Tag = "O26";
+            button26.Text = "壓制器";
+            button26.UseVisualStyleBackColor = true;
+            // 
+            // button27
+            // 
+            button27.Dock = DockStyle.Top;
+            button27.Location = new Point(0, 0);
+            button27.Name = "button27";
+            button27.Size = new Size(134, 33);
+            button27.TabIndex = 0;
+            button27.Tag = "I13";
+            button27.Text = "下位";
+            button27.UseVisualStyleBackColor = true;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(9F, 19F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.White;
-            ClientSize = new Size(1285, 621);
+            ClientSize = new Size(1281, 621);
             Controls.Add(button2);
             Controls.Add(groupBox6);
             Controls.Add(groupBox5);
@@ -268,6 +790,18 @@
             groupBox5.ResumeLayout(false);
             panel1.ResumeLayout(false);
             groupBox6.ResumeLayout(false);
+            groupBox7.ResumeLayout(false);
+            panel2.ResumeLayout(false);
+            panel7.ResumeLayout(false);
+            panel13.ResumeLayout(false);
+            panel3.ResumeLayout(false);
+            panel4.ResumeLayout(false);
+            panel5.ResumeLayout(false);
+            panel6.ResumeLayout(false);
+            panel8.ResumeLayout(false);
+            panel9.ResumeLayout(false);
+            panel10.ResumeLayout(false);
+            panel11.ResumeLayout(false);
             ResumeLayout(false);
         }
 
@@ -293,5 +827,48 @@
         private Button button_X;
         private Button button_Z;
         private Button button_Y;
+        private GroupBox groupBox7;
+        private Panel panel2;
+        private Button button6;
+        private Button button4;
+        private Button button7;
+        private Panel panel7;
+        private Button button18;
+        private Button button17;
+        private Panel panel13;
+        private Button button36;
+        private Button button34;
+        private Button button35;
+        private Button button37;
+        private Panel panel5;
+        private Button button38;
+        private Button button39;
+        private Button button40;
+        private Button button41;
+        private Panel panel4;
+        private Button button12;
+        private Button button13;
+        private Button button14;
+        private Button button15;
+        private Panel panel3;
+        private Button button8;
+        private Button button9;
+        private Button button10;
+        private Button button11;
+        private Panel panel11;
+        private Button button26;
+        private Button button27;
+        private Panel panel10;
+        private Button button24;
+        private Button button25;
+        private Panel panel9;
+        private Button button22;
+        private Button button23;
+        private Panel panel8;
+        private Button button20;
+        private Button button21;
+        private Panel panel6;
+        private Button button16;
+        private Button button19;
     }
 }

@@ -48,46 +48,48 @@ namespace PQCDEMO
     public class IOItem
     {
         public byte Id { get; set; }
+        public string Tag { get; set; } // 添加Tag属性
+        public string Text { get; set; } // 添加Text属性
         public string Name { get; set; }
-
-    }
-
- 
-    public class ApplicationConfig
-    {
-        public IOBoardConfig IOConfig { get; set; }
-
-        public ApplicationConfig()
-        {
-            // 初始化 IOBoardConfig
-            IOConfig = new IOBoardConfig();
-        }
     }
 
 
-    public class ConfigurationManager
-    {
-        private ApplicationConfig config;
 
-        public ApplicationConfig GetConfiguration()
-        {
-            if (config == null)
-            {
-                // 從檔案中讀取配置或創建新的配置實例
-                // config = DeserializeFromFile<ApplicationConfig>(...);
-            }
-            return config;
-        }
+    //public class ApplicationConfig
+    //{
+    //    public IOBoardConfig IOConfig { get; set; }
 
-        public void SaveConfiguration(ApplicationConfig config)
-        {
-            // 將配置序列化並保存到檔案
-            // SerializeToFile(config, ...);
-            this.config = config;
-        }
+    //    public ApplicationConfig()
+    //    {
+    //        // 初始化 IOBoardConfig
+    //        IOConfig = new IOBoardConfig();
+    //    }
+    //}
 
-        // 序列化和反序列化方法的實現依賴於您選擇的持久化策略
-    }
+
+    //public class ConfigurationManager
+    //{
+    //    private ApplicationConfig config;
+
+    //    public ApplicationConfig GetConfiguration()
+    //    {
+    //        if (config == null)
+    //        {
+    //            // 從檔案中讀取配置或創建新的配置實例
+    //            // config = DeserializeFromFile<ApplicationConfig>(...);
+    //        }
+    //        return config;
+    //    }
+
+    //    public void SaveConfiguration(ApplicationConfig config)
+    //    {
+    //        // 將配置序列化並保存到檔案
+    //        // SerializeToFile(config, ...);
+    //        this.config = config;
+    //    }
+
+    //    // 序列化和反序列化方法的實現依賴於您選擇的持久化策略
+    //}
 
 
 

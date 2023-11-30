@@ -18,14 +18,12 @@ namespace PQCDEMO
 
     public partial class Form1 : Form
     {
-
-
         private AxisController axisXController;
         private AxisController axisYController;
         private AxisController axisZController;
 
         private MainConfig mainConfig1 = new MainConfig();
-        private ApplicationConfig appConfig;
+        //private ApplicationConfig appConfig;
         private static bool _isdemo = true;
         private MotionController _m114 = new MotionController(_isdemo);
 
@@ -240,11 +238,40 @@ namespace PQCDEMO
 
             if (mainConfig1 != null)
             {
-                CreateButtons();
-
+                //CreateButtons();
+                UpdateButtonLabels(mainConfig1,groupBox7);
             }
         }
         Panel buttonPanel;
+
+        public void UpdateButtonLabels(MainConfig mainConfig, GroupBox groupBox)
+        {
+            foreach (Control panelControl in groupBox.Controls)
+            {
+                if (panelControl is Panel panel)
+                {
+                    // 遍历Panel内的所有控件
+                    foreach (Control control in panel.Controls)
+                    {
+                        if (control is Button button)
+                        {
+                            // 获取按钮的Tag属性
+                            string buttonTag = button.Tag.ToString();
+
+                            // 查找对应Tag的Input或Output
+                            IOItem ioItem = mainConfig.IOConfig.Inputs.FirstOrDefault(input => input.Tag == buttonTag)
+                                ?? mainConfig.IOConfig.Outputs.FirstOrDefault(output => output.Tag == buttonTag);
+
+                            // 如果找到对应的IOItem，更新按钮的Text属性
+                            if (ioItem != null)
+                            {
+                                button.Text = ioItem.Text;
+                            }
+                        }
+                    }
+                }
+            }
+        }
         private void CreateButtons()
         {
             // 创建一个Panel用于放置按钮
@@ -427,7 +454,7 @@ namespace PQCDEMO
             try
             {
                 // getAxisStatus();
-                StartUpdatingThread();
+                StartUpdatingThread();//軸
                 StartIOStatusCheckingThread();
             }
             catch (Exception ex)
@@ -496,7 +523,7 @@ namespace PQCDEMO
 
         }
 
-        private void button2_Click(object sender, EventArgs e)
+        private void button2_Click_1(object sender, EventArgs e)
         {
 
 
@@ -645,10 +672,20 @@ namespace PQCDEMO
 
         }
 
-        private void button2_Click_1(object sender, EventArgs e)
+        private void groupBox7_Enter(object sender, EventArgs e)
         {
 
         }
+
+        private void button34_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        //private void button2_Click_1(object sender, EventArgs e)
+        //{
+
+        //}
 
         /*private void panel1_Paint(object sender, PaintEventArgs e)
         {
