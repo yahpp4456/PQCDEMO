@@ -239,7 +239,7 @@ namespace PQCDEMO
             if (mainConfig1 != null)
             {
                 //CreateButtons();
-                UpdateButtonLabels(mainConfig1,groupBox7);
+                UpdateButtonLabels(mainConfig1, groupBox7);
             }
         }
         Panel buttonPanel;
@@ -250,97 +250,107 @@ namespace PQCDEMO
             {
                 if (panelControl is Panel panel)
                 {
-                    // 遍历Panel内的所有控件
                     foreach (Control control in panel.Controls)
                     {
-                        if (control is Button button)
+                        if (control is Button btn)
                         {
-                            // 获取按钮的Tag属性
-                            string buttonTag = button.Tag.ToString();
+                            string buttonTag = btn.Tag.ToString();
 
-                            // 查找对应Tag的Input或Output
+                            // 查找对应的Input或Output
                             IOItem ioItem = mainConfig.IOConfig.Inputs.FirstOrDefault(input => input.Tag == buttonTag)
                                 ?? mainConfig.IOConfig.Outputs.FirstOrDefault(output => output.Tag == buttonTag);
 
-                            // 如果找到对应的IOItem，更新按钮的Text属性
                             if (ioItem != null)
                             {
-                                button.Text = ioItem.Text;
+                                btn.Text = ioItem.Text;
+
+                                // 如果是Input，添加点击事件并设置背景色
+                                if (mainConfig.IOConfig.Inputs.Any(input => input.Tag == buttonTag))
+                                {
+                                    btn.Click += (sender, e) => InputButtonClick(ioItem);
+                                    bool inputState = pCE_D122Wrapper.ReadInputBit(ioItem.Id);
+                                    btn.BackColor = inputState ? Color.LightGreen : Color.Green;
+                                }
+                                // 如果是Output，添加点击事件
+                                else if (mainConfig.IOConfig.Outputs.Any(output => output.Tag == buttonTag))
+                                {
+                                    btn.Click += (sender, e) => OutputButtonClick(ioItem);
+                                }
                             }
                         }
                     }
                 }
             }
         }
-        private void CreateButtons()
-        {
-            // 创建一个Panel用于放置按钮
-            buttonPanel = new Panel
-            {
-                AutoScroll = true, // 启用滚动条
-                Location = new Point(10, 20), // 设置Panel的位置
-                Size = new Size(groupBox2.Width - pictureBox2.Width - 20, groupBox2.Height - 50), // 设置Panel的大小
-                BorderStyle = BorderStyle.None // 为了清晰可见，给Panel设置一个边框
+        //private void CreateButtons()
+        //{
+        //    // 创建一个Panel用于放置按钮
+        //    buttonPanel = new Panel
+        //    {
+        //        AutoScroll = true, // 启用滚动条
+        //        Location = new Point(10, 20), // 设置Panel的位置
+        //        Size = new Size(groupBox2.Width - pictureBox2.Width - 20, groupBox2.Height - 50), // 设置Panel的大小
+        //        BorderStyle = BorderStyle.None // 为了清晰可见，给Panel设置一个边框
 
-            };
+        //    };
 
-            groupBox2.Controls.Add(buttonPanel); // 将Panel添加到GroupBox
+        //    groupBox2.Controls.Add(buttonPanel); // 将Panel添加到GroupBox
 
-            int x = 10; // Panel内的初始X坐标
-            int y = 10; // Panel内的初始Y坐标
-            const int padding = 10; // 按钮之间的间距
-            const int buttonWidth = 100; // 按钮的宽度
-            const int buttonHeight = 30; // 按钮的高度
-            int buttonPanelWidth = buttonPanel.Width - padding; // 用于计算何时需要换行
+        //    int x = 10; // Panel内的初始X坐标
+        //    int y = 10; // Panel内的初始Y坐标
+        //    const int padding = 10; // 按钮之间的间距
+        //    const int buttonWidth = 100; // 按钮的宽度
+        //    const int buttonHeight = 30; // 按钮的高度
+        //    int buttonPanelWidth = buttonPanel.Width - padding; // 用于计算何时需要换行
 
-            // 创建输入按钮
-            foreach (var input in mainConfig1.IOConfig.Inputs)
-            {
-                Button btn = new Button
-                {
-                    Text = input.Name,
-                    Size = new Size(buttonWidth, buttonHeight),
-                    Location = new Point(x, y),
-                    Tag = input.Id // 设置按钮的Tag属性为ID
-                };
-                btn.Click += (sender, e) => InputButtonClick(input.Id);
-                bool inputState = pCE_D122Wrapper.ReadInputBit(input.Id);
-                btn.BackColor = inputState ? Color.LightGreen : Color.Green; ;
-                buttonPanel.Controls.Add(btn);
+        //    // 创建输入按钮
+        //    foreach (var input in mainConfig1.IOConfig.Inputs)
+        //    {
+        //        Button btn = new Button
+        //        {
+        //            Text = input.Name,
+        //            Size = new Size(buttonWidth, buttonHeight),
+        //            Location = new Point(x, y),
+        //            Tag = input.Id // 设置按钮的Tag属性为ID
+        //        };
+        //        btn.Click += (sender, e) => InputButtonClick(input.Id);
+        //        bool inputState = pCE_D122Wrapper.ReadInputBit(input.Id);
+        //        btn.BackColor = inputState ? Color.LightGreen : Color.Green; ;
+        //        buttonPanel.Controls.Add(btn);
 
-                x += buttonWidth + padding;
-                // 如果下一个按钮的位置超出Panel的宽度，则换行
-                if (x + buttonWidth > buttonPanelWidth)
-                {
-                    x = 10; // 重置X坐标
-                    y += buttonHeight + padding; // 增加Y坐标
-                }
-            }
+        //        x += buttonWidth + padding;
+        //        // 如果下一个按钮的位置超出Panel的宽度，则换行
+        //        if (x + buttonWidth > buttonPanelWidth)
+        //        {
+        //            x = 10; // 重置X坐标
+        //            y += buttonHeight + padding; // 增加Y坐标
+        //        }
+        //    }
 
-            // 创建输出按钮，同样需要考虑换行
-            x = 10; // 重置X坐标
-            y += buttonHeight + padding; // 假设输入和输出按钮至少有一行的间隔
+        //    // 创建输出按钮，同样需要考虑换行
+        //    x = 10; // 重置X坐标
+        //    y += buttonHeight + padding; // 假设输入和输出按钮至少有一行的间隔
 
-            foreach (var output in mainConfig1.IOConfig.Outputs)
-            {
-                Button btn = new Button
-                {
-                    Text = output.Name,
-                    Size = new Size(buttonWidth, buttonHeight),
-                    Location = new Point(x, y)
-                };
-                btn.Click += (sender, e) => OutputButtonClick(output.Id);
-                buttonPanel.Controls.Add(btn);
+        //    foreach (var output in mainConfig1.IOConfig.Outputs)
+        //    {
+        //        Button btn = new Button
+        //        {
+        //            Text = output.Name,
+        //            Size = new Size(buttonWidth, buttonHeight),
+        //            Location = new Point(x, y)
+        //        };
+        //        btn.Click += (sender, e) => OutputButtonClick(output.Id);
+        //        buttonPanel.Controls.Add(btn);
 
-                x += buttonWidth + padding;
-                // 如果下一个按钮的位置超出Panel的宽度，则换行
-                if (x + buttonWidth > buttonPanelWidth)
-                {
-                    x = 10; // 重置X坐标
-                    y += buttonHeight + padding; // 增加Y坐标
-                }
-            }
-        }
+        //        x += buttonWidth + padding;
+        //        // 如果下一个按钮的位置超出Panel的宽度，则换行
+        //        if (x + buttonWidth > buttonPanelWidth)
+        //        {
+        //            x = 10; // 重置X坐标
+        //            y += buttonHeight + padding; // 增加Y坐标
+        //        }
+        //    }
+        //}
 
 
         private void CheckAndUpdateIOStatus()
@@ -387,7 +397,7 @@ namespace PQCDEMO
             else
             {
                 // 根据IO状态更新按钮的背景色
-                foreach (Control control in buttonPanel.Controls)
+                foreach (Control control in groupBox7.Controls)
                 {
                     if (control is Button button && (byte)button.Tag == id)
                     {
@@ -399,18 +409,18 @@ namespace PQCDEMO
             }
         }
 
-        private void InputButtonClick(byte id)
+        private void InputButtonClick(IOItem ioItem)
         {
-            bool state = pCE_D122Wrapper.ReadInputBit(id);
-            MessageBox.Show($"Input {id}: {(state ? "On" : "Off")}", "Input State");
+            bool state = pCE_D122Wrapper.ReadInputBit(ioItem.Id);
+            MessageBox.Show($"Input {ioItem.Id}: {(state ? "On" : "Off")}", "Input State");
         }
 
-        private void OutputButtonClick(byte id)
+        private void OutputButtonClick(IOItem ioItem)
         {
             // 這裡的操作取決於您想要如何處理輸出按鈕的點擊事件。
             // 例如，您可以切換輸出的狀態：
-            pCE_D122Wrapper.ToggleOutputBit(id);
-            MessageBox.Show($"Toggled output {id}.", "Output State");
+            pCE_D122Wrapper.ToggleOutputBit(ioItem.Id);
+            MessageBox.Show($"Toggled output {ioItem.Id}.", "Output State");
         }
         /* private void pictrans(PictureBox pic, Label lab)
          {
@@ -678,6 +688,11 @@ namespace PQCDEMO
         }
 
         private void button34_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button28_Click(object sender, EventArgs e)
         {
 
         }
