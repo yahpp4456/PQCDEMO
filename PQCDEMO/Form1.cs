@@ -13,6 +13,8 @@ using System.Xml.Linq;
 using PQCDEMO.Model;
 using static System.Windows.Forms.AxHost;
 
+
+
 namespace PQCDEMO
 {
 
@@ -44,7 +46,7 @@ namespace PQCDEMO
             axisgroup(groupBox_axis);
 
             LoadConfig();
-
+           groupBoxes.Add(groupBox7);
         }
         string[] texts = { "X", "Y", "Z" };
         private void axisgroup(GroupBox groupBox)
@@ -105,7 +107,6 @@ namespace PQCDEMO
             AdjustGroupLayout();
             groupBox.ResumeLayout(true);
 
-
         }
         private void AdjustGroupLayoutThread()
         {
@@ -149,7 +150,7 @@ namespace PQCDEMO
                     else
                     {
                         // 設置Dock屬性為DockStyle.Top，將群組盒停靠在面板頂部
-                        //groupBox.Dock = DockStyle.Top;
+                        groupBox.Dock = DockStyle.Top;
                         panel1.Controls.Add(groupBox);
                         groupBox.BringToFront();
 
@@ -161,59 +162,90 @@ namespace PQCDEMO
             panel1.ResumeLayout(true);
 
         }
+        public void GetButtonStatesAsJson(MainConfig mainConfig, GroupBox groupBox)
+        {
+            var ioStates = groupBox.Controls
+                .OfType<Panel>()
+                .SelectMany(panel => panel.Controls.OfType<Button>())
+                .Select(btn => new
+                {
+                    Tag = btn.Tag.ToString(),
+                    IoItem = mainConfig.IOConfig.Inputs.Concat(mainConfig.IOConfig.Outputs)
+                               .FirstOrDefault(item => item.Tag == btn.Tag.ToString())
+                })
+                .Where(x => x.IoItem != null)
+                .Select(x => new IO_State
+                {
+                    Tag = x.Tag,
+                    Id = x.IoItem.Id,
+                    State = pCE_D122Wrapper.ReadInputBit(x.IoItem.Id) // 
 
-        //private void AdjustGroupLayout()
-        //{
-        //    panel1.SuspendLayout();
+                })
+                .ToList();
 
-        //    int maxPanelHeight = panel1.Height;
+            //        // 添加 AxisConfigs 成員的示例數據
+            var axisConfigs = new List<AxisConfig>{
+            //
+           new AxisConfig(axisXController.AxisName, axisXController.AxisStatus),
+           new AxisConfig(axisYController.AxisName, axisYController.AxisStatus),
+           new AxisConfig(axisZController.AxisName, axisZController.AxisStatus)
+            
+            };
 
-        //    // 創建字典來按可見度分組GroupBoxes
-        //    Dictionary<bool, List<GroupBox>> groupedGroupBoxes = new Dictionary<bool, List<GroupBox>>();
+                    var dataToSerialize = new
+                  {
+                        ioStates = ioStates,
+                        AxisConfigs = axisConfigs
+                    };
 
-        //    foreach (var groupBox in groupBoxes)
-        //    {
-        //        bool isVisible = groupBox.Visible;
-        //        if (!groupedGroupBoxes.ContainsKey(isVisible))
-        //        {
-        //            groupedGroupBoxes[isVisible] = new List<GroupBox>();
-        //        }
-        //        groupedGroupBoxes[isVisible].Add(groupBox);
-        //    }
-
-        //    // 遍歷字典，按可見度將GroupBox添加到面板
-        //    foreach (var isVisible in groupedGroupBoxes.Keys)
-        //    {
-        //        int currentHeight = panel1.Controls.OfType<GroupBox>().Sum(g => g.Height);
-
-        //        foreach (var groupBox in groupedGroupBoxes[isVisible])
-        //        {
-        //            // 檢查GroupBox是否已經在panel1中
-        //            if (!panel1.Controls.Contains(groupBox))
-        //            {
-        //                int groupBoxHeight = groupBox.Height;
-
-        //                // 檢查加上這個GroupBox後的總高度是否會超過面板的最大高度
-        //                if (currentHeight + groupBoxHeight <= maxPanelHeight)
-        //                {
-        //                 //   groupBox.Dock = DockStyle.Top;
-        //                //    panel1.Controls.Add(groupBox);
-
-
-        //                    currentHeight += groupBoxHeight;
-        //                }
-        //                else
-        //                {
-        //                    break;
-        //                }
-        //            }
-        //        }
-        //    }
-
-        //    panel1.ResumeLayout(true);
-        //}
+                 string json = JsonConvert.SerializeObject(dataToSerialize);
 
 
+          //  string json = JsonConvert.SerializeObject(ioStates);
+
+            File.WriteAllText("QCreport.json", json);
+        }
+
+
+        public bool CompareButtonStatesWithJson(MainConfig mainConfig, GroupBox groupBox)
+        {
+            // 讀取之前生成的JSON檔案
+            string json = File.ReadAllText("QCreport.json");
+
+            // 將JSON轉換為List<IO_State>
+            List<IO_State> savedStates = JsonConvert.DeserializeObject<List<IO_State>>(json);
+
+            // 獲取當前按鈕的狀態
+            var currentStates = groupBox.Controls
+                .OfType<Panel>()
+                .SelectMany(panel => panel.Controls.OfType<Button>())
+                .Select(btn => new
+                {
+                    Tag = btn.Tag.ToString(),
+                    IoItem = mainConfig.IOConfig.Inputs.Concat(mainConfig.IOConfig.Outputs)
+                                .FirstOrDefault(item => item.Tag == btn.Tag.ToString())
+                })
+                .Where(x => x.IoItem != null)
+                .Select(x => new IO_State
+                {
+                    Tag = x.Tag,
+                    Id = x.IoItem.Id,
+                    State = false // 假设一个函数来读取按钮的状态
+                })
+                .ToList();
+
+            // 比對當前按鈕狀態與之前存儲的狀態
+            bool isEqual = savedStates.Count == currentStates.Count &&
+                           savedStates.All(savedState =>
+                               currentStates.Any(currentState =>
+                                   savedState.Tag == currentState.Tag &&
+                                   savedState.Id == currentState.Id &&
+                                   savedState.State == currentState.State
+                               )
+                           );
+
+            return isEqual;
+        }
 
         private void LoadConfig()
         {
@@ -240,7 +272,11 @@ namespace PQCDEMO
             {
                 //CreateButtons();
                 UpdateButtonLabels(mainConfig1, groupBox7);
+
+                GetButtonStatesAsJson(mainConfig1, groupBox7);
             }
+
+
         }
         Panel buttonPanel;
 
@@ -401,7 +437,6 @@ namespace PQCDEMO
                 {
                     if (control is Button button && (byte)button.Tag == id)
                     {
-
                         button.BackColor = state ? Color.LightGreen : Color.Green;
                         break; // 找到匹配的按钮后退出循环
                     }
@@ -694,7 +729,7 @@ namespace PQCDEMO
 
         private void button28_Click(object sender, EventArgs e)
         {
-
+            ToggleGroup(groupBox7);
         }
 
         //private void button2_Click_1(object sender, EventArgs e)

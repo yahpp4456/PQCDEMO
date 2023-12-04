@@ -6,6 +6,12 @@ using System.Threading.Tasks;
 
 namespace PQCDEMO
 {
+    public class IO_State
+    {
+        public byte Id { get; set; } // 添加ID属性
+        public string Tag { get; set; }
+        public bool State { get; set; }
+    }
 
     public class MainConfig
     {
@@ -92,9 +98,5 @@ namespace PQCDEMO
 
     //    // 序列化和反序列化方法的實現依賴於您選擇的持久化策略
     //}
-
-
-
-
-
+  
 }
