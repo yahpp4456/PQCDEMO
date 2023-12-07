@@ -44,6 +44,7 @@
             button5 = new Button();
             groupBox5 = new GroupBox();
             panel1 = new Panel();
+            groupBox_axis = new GroupBox();
             groupBox7 = new GroupBox();
             panel11 = new Panel();
             button26 = new Button();
@@ -58,7 +59,6 @@
             button20 = new Button();
             button21 = new Button();
             panel6 = new Panel();
-            groupBox_axis = new GroupBox();
             button16 = new Button();
             button19 = new Button();
             panel5 = new Panel();
@@ -122,6 +122,7 @@
             button1.TabIndex = 0;
             button1.Text = "Test";
             button1.UseVisualStyleBackColor = true;
+            button1.Click += button1_Click;
             // 
             // groupBox1
             // 
@@ -204,6 +205,7 @@
             button29.TabIndex = 8;
             button29.Text = "DP1000G5";
             button29.UseVisualStyleBackColor = true;
+            button29.Click += button29_Click;
             // 
             // button28
             // 
@@ -279,6 +281,16 @@
             panel1.Name = "panel1";
             panel1.Size = new Size(438, 572);
             panel1.TabIndex = 0;
+            // 
+            // groupBox_axis
+            // 
+            groupBox_axis.Dock = DockStyle.Top;
+            groupBox_axis.Location = new Point(0, 550);
+            groupBox_axis.Name = "groupBox_axis";
+            groupBox_axis.Size = new Size(438, 150);
+            groupBox_axis.TabIndex = 0;
+            groupBox_axis.TabStop = false;
+            groupBox_axis.Text = "axis";
             // 
             // groupBox7
             // 
@@ -436,16 +448,6 @@
             panel6.Size = new Size(134, 96);
             panel6.TabIndex = 15;
             // 
-            // groupBox_axis
-            // 
-            groupBox_axis.Dock = DockStyle.Top;
-            groupBox_axis.Location = new Point(0, 550);
-            groupBox_axis.Name = "groupBox_axis";
-            groupBox_axis.Size = new Size(438, 114);
-            groupBox_axis.TabIndex = 0;
-            groupBox_axis.TabStop = false;
-            groupBox_axis.Text = "axis";
-            // 
             // button16
             // 
             button16.Dock = DockStyle.Fill;
@@ -496,7 +498,7 @@
             button39.Name = "button39";
             button39.Size = new Size(50, 60);
             button39.TabIndex = 1;
-            button39.Tag = "O04";
+            button39.Tag = "O03";
             button39.UseVisualStyleBackColor = true;
             // 
             // button40
@@ -547,7 +549,7 @@
             button13.Name = "button13";
             button13.Size = new Size(50, 60);
             button13.TabIndex = 1;
-            button13.Tag = "O03";
+            button13.Tag = "O02";
             button13.UseVisualStyleBackColor = true;
             // 
             // button14
@@ -599,7 +601,7 @@
             button9.Name = "button9";
             button9.Size = new Size(50, 60);
             button9.TabIndex = 1;
-            button9.Tag = "O02";
+            button9.Tag = "O01";
             button9.Text = "汽缸";
             button9.UseVisualStyleBackColor = true;
             // 
@@ -655,8 +657,8 @@
             button34.Name = "button34";
             button34.Size = new Size(50, 60);
             button34.TabIndex = 1;
-            button34.Tag = "O01";
-            button34.Text = "O01";
+            button34.Tag = "O00";
+            button34.Text = "O00";
             button34.UseVisualStyleBackColor = true;
             button34.Click += button34_Click;
             // 
@@ -794,7 +796,7 @@
             AutoScaleDimensions = new SizeF(9F, 19F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.White;
-            ClientSize = new Size(1281, 832);
+            ClientSize = new Size(1281, 629);
             Controls.Add(button2);
             Controls.Add(groupBox6);
             Controls.Add(groupBox5);

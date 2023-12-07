@@ -12,9 +12,6 @@ using System.Configuration;
 using System.Xml.Linq;
 using PQCDEMO.Model;
 using static System.Windows.Forms.AxHost;
-
-
-
 namespace PQCDEMO
 {
 
@@ -26,7 +23,7 @@ namespace PQCDEMO
 
         private MainConfig mainConfig1 = new MainConfig();
         //private ApplicationConfig appConfig;
-        private static bool _isdemo = true;
+        private static bool _isdemo = false;
         private MotionController _m114 = new MotionController(_isdemo);
 
         IOCardWrapper pCE_D122Wrapper = new IOCardWrapper(_isdemo);
@@ -46,7 +43,7 @@ namespace PQCDEMO
             axisgroup(groupBox_axis);
 
             LoadConfig();
-           groupBoxes.Add(groupBox7);
+            groupBoxes.Add(groupBox7);
         }
         string[] texts = { "X", "Y", "Z" };
         private void axisgroup(GroupBox groupBox)
@@ -64,7 +61,7 @@ namespace PQCDEMO
                     BackColor = groupBox.BackColor,
                     Visible = groupBox.Visible,
                     Dock = groupBox.Dock,
-                    Parent = panel1 // 设置父容器，这里假设你的控件容器是Form
+                    Parent = panel1 // 
                 };
                 groupBoxes.Add(newGroupBox);
                 switch (i)
@@ -189,19 +186,19 @@ namespace PQCDEMO
            new AxisConfig(axisXController.AxisName, axisXController.AxisStatus),
            new AxisConfig(axisYController.AxisName, axisYController.AxisStatus),
            new AxisConfig(axisZController.AxisName, axisZController.AxisStatus)
-            
+
             };
 
-                    var dataToSerialize = new
-                  {
-                        ioStates = ioStates,
-                        AxisConfigs = axisConfigs
-                    };
+            var dataToSerialize = new
+            {
+                ioStates = ioStates,
+                AxisConfigs = axisConfigs
+            };
 
-                 string json = JsonConvert.SerializeObject(dataToSerialize);
+            string json = JsonConvert.SerializeObject(dataToSerialize);
 
 
-          //  string json = JsonConvert.SerializeObject(ioStates);
+            //  string json = JsonConvert.SerializeObject(ioStates);
 
             File.WriteAllText("QCreport.json", json);
         }
@@ -318,84 +315,15 @@ namespace PQCDEMO
                 }
             }
         }
-        //private void CreateButtons()
-        //{
-        //    // 创建一个Panel用于放置按钮
-        //    buttonPanel = new Panel
-        //    {
-        //        AutoScroll = true, // 启用滚动条
-        //        Location = new Point(10, 20), // 设置Panel的位置
-        //        Size = new Size(groupBox2.Width - pictureBox2.Width - 20, groupBox2.Height - 50), // 设置Panel的大小
-        //        BorderStyle = BorderStyle.None // 为了清晰可见，给Panel设置一个边框
-
-        //    };
-
-        //    groupBox2.Controls.Add(buttonPanel); // 将Panel添加到GroupBox
-
-        //    int x = 10; // Panel内的初始X坐标
-        //    int y = 10; // Panel内的初始Y坐标
-        //    const int padding = 10; // 按钮之间的间距
-        //    const int buttonWidth = 100; // 按钮的宽度
-        //    const int buttonHeight = 30; // 按钮的高度
-        //    int buttonPanelWidth = buttonPanel.Width - padding; // 用于计算何时需要换行
-
-        //    // 创建输入按钮
-        //    foreach (var input in mainConfig1.IOConfig.Inputs)
-        //    {
-        //        Button btn = new Button
-        //        {
-        //            Text = input.Name,
-        //            Size = new Size(buttonWidth, buttonHeight),
-        //            Location = new Point(x, y),
-        //            Tag = input.Id // 设置按钮的Tag属性为ID
-        //        };
-        //        btn.Click += (sender, e) => InputButtonClick(input.Id);
-        //        bool inputState = pCE_D122Wrapper.ReadInputBit(input.Id);
-        //        btn.BackColor = inputState ? Color.LightGreen : Color.Green; ;
-        //        buttonPanel.Controls.Add(btn);
-
-        //        x += buttonWidth + padding;
-        //        // 如果下一个按钮的位置超出Panel的宽度，则换行
-        //        if (x + buttonWidth > buttonPanelWidth)
-        //        {
-        //            x = 10; // 重置X坐标
-        //            y += buttonHeight + padding; // 增加Y坐标
-        //        }
-        //    }
-
-        //    // 创建输出按钮，同样需要考虑换行
-        //    x = 10; // 重置X坐标
-        //    y += buttonHeight + padding; // 假设输入和输出按钮至少有一行的间隔
-
-        //    foreach (var output in mainConfig1.IOConfig.Outputs)
-        //    {
-        //        Button btn = new Button
-        //        {
-        //            Text = output.Name,
-        //            Size = new Size(buttonWidth, buttonHeight),
-        //            Location = new Point(x, y)
-        //        };
-        //        btn.Click += (sender, e) => OutputButtonClick(output.Id);
-        //        buttonPanel.Controls.Add(btn);
-
-        //        x += buttonWidth + padding;
-        //        // 如果下一个按钮的位置超出Panel的宽度，则换行
-        //        if (x + buttonWidth > buttonPanelWidth)
-        //        {
-        //            x = 10; // 重置X坐标
-        //            y += buttonHeight + padding; // 增加Y坐标
-        //        }
-        //    }
-        //}
 
 
         private void CheckAndUpdateIOStatus()
         {
-            // 在這裡檢查IO狀態並更新按鈕的顏色
+            //在這裡檢查IO狀態並更新按鈕的顏色
             foreach (var input in mainConfig1.IOConfig.Inputs)
             {
                 bool inputState = pCE_D122Wrapper.ReadInputBit(input.Id);
-                //UpdateButtonColor(input.Id, inputState);
+                UpdateButtonColor(input, inputState);
             }
 
             foreach (var output in mainConfig1.IOConfig.Outputs)
@@ -413,8 +341,8 @@ namespace PQCDEMO
                 {
                     // 檢查IO狀態並更新按鈕顏色
                     CheckAndUpdateIOStatus();
+        
 
-                    // 暫停一段時間，例如500毫秒，然後再次檢查
                     Thread.Sleep(100);
                 }
             });
@@ -422,25 +350,36 @@ namespace PQCDEMO
             // 啟動執行緒
             ioThread.Start();
         }
-        private void UpdateButtonColor(int id, bool state)
+        private void UpdateButtonColor(IOItem ioitem, bool status)
         {
             // 在这里更新按钮的颜色，根据IO状态
             if (InvokeRequired)
             {
                 // 如果需要在UI线程上更新按钮，请使用Invoke方法
-                Invoke(new Action(() => UpdateButtonColor(id, state)));
+                Invoke(new Action(() => UpdateButtonColor(ioitem, status)));
             }
             else
             {
-                // 根据IO状态更新按钮的背景色
-                foreach (Control control in groupBox7.Controls)
+
+                foreach (Control panelControl in groupBox7.Controls)
                 {
-                    if (control is Button button && (byte)button.Tag == id)
+                    if (panelControl is Panel panel)
                     {
-                        button.BackColor = state ? Color.LightGreen : Color.Green;
-                        break; // 找到匹配的按钮后退出循环
+
+                        foreach (Control control in panel.Controls)
+                        {
+
+                            if (control is Button button && (string)button.Tag == ioitem.Tag)
+                            {
+
+                                button.BackColor = status ? Color.LightGreen : Color.Green;
+                            }
+                        }
+
                     }
                 }
+
+
             }
         }
 
@@ -498,7 +437,6 @@ namespace PQCDEMO
         {
             try
             {
-                // getAxisStatus();
                 StartUpdatingThread();//軸
                 StartIOStatusCheckingThread();
             }
@@ -730,6 +668,16 @@ namespace PQCDEMO
         private void button28_Click(object sender, EventArgs e)
         {
             ToggleGroup(groupBox7);
+        }
+
+        private void button1_Click_1(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button29_Click(object sender, EventArgs e)
+        {
+            //UpdateButtonColor();
         }
 
         //private void button2_Click_1(object sender, EventArgs e)
