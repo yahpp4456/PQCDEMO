@@ -39,13 +39,10 @@
             button29 = new Button();
             button28 = new Button();
             pictureBox2 = new PictureBox();
-            groupBox3 = new GroupBox();
-            pictureBox3 = new PictureBox();
-            button5 = new Button();
             groupBox5 = new GroupBox();
             panel1 = new Panel();
             groupBox_axis = new GroupBox();
-            groupBox7 = new GroupBox();
+            groupBox_io = new GroupBox();
             panel11 = new Panel();
             button26 = new Button();
             button27 = new Button();
@@ -89,17 +86,16 @@
             button6 = new Button();
             button4 = new Button();
             groupBox6 = new GroupBox();
+            pictureBox3 = new PictureBox();
             button3 = new Button();
             button2 = new Button();
             groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox2).BeginInit();
-            groupBox3.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)pictureBox3).BeginInit();
             groupBox5.SuspendLayout();
             panel1.SuspendLayout();
-            groupBox7.SuspendLayout();
+            groupBox_io.SuspendLayout();
             panel11.SuspendLayout();
             panel10.SuspendLayout();
             panel9.SuspendLayout();
@@ -112,6 +108,7 @@
             panel7.SuspendLayout();
             panel2.SuspendLayout();
             groupBox6.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox3).BeginInit();
             SuspendLayout();
             // 
             // button1
@@ -228,39 +225,6 @@
             pictureBox2.TabIndex = 0;
             pictureBox2.TabStop = false;
             // 
-            // groupBox3
-            // 
-            groupBox3.Controls.Add(pictureBox3);
-            groupBox3.Controls.Add(button5);
-            groupBox3.Location = new Point(12, 319);
-            groupBox3.Name = "groupBox3";
-            groupBox3.Size = new Size(643, 145);
-            groupBox3.TabIndex = 3;
-            groupBox3.TabStop = false;
-            groupBox3.Text = "機台";
-            // 
-            // pictureBox3
-            // 
-            pictureBox3.Dock = DockStyle.Right;
-            pictureBox3.Image = Properties.Resources.DP3000_G3_V2_Ori_color;
-            pictureBox3.Location = new Point(490, 23);
-            pictureBox3.Name = "pictureBox3";
-            pictureBox3.Size = new Size(150, 119);
-            pictureBox3.SizeMode = PictureBoxSizeMode.Zoom;
-            pictureBox3.TabIndex = 1;
-            pictureBox3.TabStop = false;
-            // 
-            // button5
-            // 
-            button5.Location = new Point(23, 43);
-            button5.Margin = new Padding(1);
-            button5.Name = "button5";
-            button5.Size = new Size(96, 71);
-            button5.TabIndex = 2;
-            button5.Text = "Mdata";
-            button5.UseVisualStyleBackColor = true;
-            button5.Click += button5_Click;
-            // 
             // groupBox5
             // 
             groupBox5.Controls.Add(panel1);
@@ -274,7 +238,7 @@
             // panel1
             // 
             panel1.Controls.Add(groupBox_axis);
-            panel1.Controls.Add(groupBox7);
+            panel1.Controls.Add(groupBox_io);
             panel1.Dock = DockStyle.Fill;
             panel1.Location = new Point(3, 23);
             panel1.Margin = new Padding(1);
@@ -292,28 +256,28 @@
             groupBox_axis.TabStop = false;
             groupBox_axis.Text = "axis";
             // 
-            // groupBox7
+            // groupBox_io
             // 
-            groupBox7.Controls.Add(panel11);
-            groupBox7.Controls.Add(panel10);
-            groupBox7.Controls.Add(panel9);
-            groupBox7.Controls.Add(panel8);
-            groupBox7.Controls.Add(panel6);
-            groupBox7.Controls.Add(panel5);
-            groupBox7.Controls.Add(panel4);
-            groupBox7.Controls.Add(panel3);
-            groupBox7.Controls.Add(panel13);
-            groupBox7.Controls.Add(panel7);
-            groupBox7.Controls.Add(panel2);
-            groupBox7.Dock = DockStyle.Top;
-            groupBox7.Location = new Point(0, 0);
-            groupBox7.Name = "groupBox7";
-            groupBox7.Size = new Size(438, 550);
-            groupBox7.TabIndex = 1;
-            groupBox7.TabStop = false;
-            groupBox7.Text = "groupBox7";
-            groupBox7.Visible = false;
-            groupBox7.Enter += groupBox7_Enter;
+            groupBox_io.Controls.Add(panel11);
+            groupBox_io.Controls.Add(panel10);
+            groupBox_io.Controls.Add(panel9);
+            groupBox_io.Controls.Add(panel8);
+            groupBox_io.Controls.Add(panel6);
+            groupBox_io.Controls.Add(panel5);
+            groupBox_io.Controls.Add(panel4);
+            groupBox_io.Controls.Add(panel3);
+            groupBox_io.Controls.Add(panel13);
+            groupBox_io.Controls.Add(panel7);
+            groupBox_io.Controls.Add(panel2);
+            groupBox_io.Dock = DockStyle.Top;
+            groupBox_io.Location = new Point(0, 0);
+            groupBox_io.Name = "groupBox_io";
+            groupBox_io.Size = new Size(438, 550);
+            groupBox_io.TabIndex = 1;
+            groupBox_io.TabStop = false;
+            groupBox_io.Text = "IOstatus";
+            groupBox_io.Visible = false;
+            groupBox_io.Enter += groupBox7_Enter;
             // 
             // panel11
             // 
@@ -759,14 +723,26 @@
             // 
             // groupBox6
             // 
+            groupBox6.Controls.Add(pictureBox3);
             groupBox6.Controls.Add(button3);
             groupBox6.FlatStyle = FlatStyle.System;
-            groupBox6.Location = new Point(12, 471);
+            groupBox6.Location = new Point(9, 313);
             groupBox6.Name = "groupBox6";
             groupBox6.Size = new Size(643, 145);
             groupBox6.TabIndex = 5;
             groupBox6.TabStop = false;
             groupBox6.Text = "DW";
+            // 
+            // pictureBox3
+            // 
+            pictureBox3.Dock = DockStyle.Right;
+            pictureBox3.Image = Properties.Resources.DP;
+            pictureBox3.Location = new Point(490, 23);
+            pictureBox3.Name = "pictureBox3";
+            pictureBox3.Size = new Size(150, 119);
+            pictureBox3.SizeMode = PictureBoxSizeMode.Zoom;
+            pictureBox3.TabIndex = 7;
+            pictureBox3.TabStop = false;
             // 
             // button3
             // 
@@ -800,7 +776,6 @@
             Controls.Add(button2);
             Controls.Add(groupBox6);
             Controls.Add(groupBox5);
-            Controls.Add(groupBox3);
             Controls.Add(groupBox2);
             Controls.Add(button1);
             Controls.Add(groupBox1);
@@ -812,11 +787,9 @@
             ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             groupBox2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)pictureBox2).EndInit();
-            groupBox3.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)pictureBox3).EndInit();
             groupBox5.ResumeLayout(false);
             panel1.ResumeLayout(false);
-            groupBox7.ResumeLayout(false);
+            groupBox_io.ResumeLayout(false);
             panel11.ResumeLayout(false);
             panel10.ResumeLayout(false);
             panel9.ResumeLayout(false);
@@ -829,6 +802,7 @@
             panel7.ResumeLayout(false);
             panel2.ResumeLayout(false);
             groupBox6.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)pictureBox3).EndInit();
             ResumeLayout(false);
         }
 
@@ -842,19 +816,16 @@
         private Label label5;
         private Label label6;
         private GroupBox groupBox4;
-        private GroupBox groupBox3;
         private GroupBox groupBox5;
         private GroupBox groupBox6;
-        private PictureBox pictureBox3;
         private Button button2;
         private Button button3;
-        private Button button5;
         private Panel panel1;
         private GroupBox groupBox_axis;
         private Button button_X;
         private Button button_Z;
         private Button button_Y;
-        private GroupBox groupBox7;
+        private GroupBox groupBox_io;
         private Panel panel11;
         private Button button26;
         private Button button27;
@@ -899,5 +870,6 @@
         private Button button4;
         private Button button29;
         private Button button28;
+        private PictureBox pictureBox3;
     }
 }

@@ -23,17 +23,19 @@ namespace PQCDEMO
 
         private MainConfig mainConfig1 = new MainConfig();
         //private ApplicationConfig appConfig;
-        private static bool _isdemo = false;
+        private static bool _isdemo = true;
         private MotionController _m114 = new MotionController(_isdemo);
 
         IOCardWrapper pCE_D122Wrapper = new IOCardWrapper(_isdemo);
 
         //資料來源
-        string sourceFilePath = System.Configuration.ConfigurationManager.AppSettings["sourceFilePath"];
+        string sourceFilePath = ConfigurationManager.AppSettings["sourceFilePath"];
         //目的位置
-        string targetFilePath = System.Configuration.ConfigurationManager.AppSettings["targetFilePath"];
+        string targetFilePath = ConfigurationManager.AppSettings["targetFilePath"];
 
-        string needDataPeriod = System.Configuration.ConfigurationManager.AppSettings["needDataPeriod"];
+        string needDataPeriod = ConfigurationManager.AppSettings["needDataPeriod"];
+
+        string typeFilePath = ConfigurationManager.AppSettings["typeFilePath"];
         public Form1()
         {
 
@@ -43,7 +45,8 @@ namespace PQCDEMO
             axisgroup(groupBox_axis);
 
             LoadConfig();
-            groupBoxes.Add(groupBox7);
+            groupBoxes.Add(groupBox_io);
+
         }
         string[] texts = { "X", "Y", "Z" };
         private void axisgroup(GroupBox groupBox)
@@ -159,15 +162,15 @@ namespace PQCDEMO
             panel1.ResumeLayout(true);
 
         }
-        public void GetButtonStatesAsJson(MainConfig mainConfig, GroupBox groupBox)
+        public void ExportQCreport()
         {
-            var ioStates = groupBox.Controls
+            var ioStates = groupBox_io.Controls
                 .OfType<Panel>()
                 .SelectMany(panel => panel.Controls.OfType<Button>())
                 .Select(btn => new
                 {
                     Tag = btn.Tag.ToString(),
-                    IoItem = mainConfig.IOConfig.Inputs.Concat(mainConfig.IOConfig.Outputs)
+                    IoItem = mainConfig1.IOConfig.Inputs.Concat(mainConfig1.IOConfig.Outputs)
                                .FirstOrDefault(item => item.Tag == btn.Tag.ToString())
                 })
                 .Where(x => x.IoItem != null)
@@ -197,8 +200,6 @@ namespace PQCDEMO
 
             string json = JsonConvert.SerializeObject(dataToSerialize);
 
-
-            //  string json = JsonConvert.SerializeObject(ioStates);
 
             File.WriteAllText("QCreport.json", json);
         }
@@ -249,28 +250,32 @@ namespace PQCDEMO
             // 保存當前激活的窗口
 
             // 創建和配置 OpenFileDialog
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Title = "選擇配置文件";
-            openFileDialog.Filter = "JSON文件 (*.json)|*.json"; // 篩選只顯示JSON文件
-            openFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments); // 設置初始目錄
+            //OpenFileDialog openFileDialog = new OpenFileDialog();
+            //openFileDialog.Title = "選擇配置文件";
+            //openFileDialog.Filter = "JSON文件 (*.json)|*.json"; // 篩選只顯示JSON文件
+            //openFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments); // 設置初始目錄
+
+           
+
+            //// 顯示對話框
+            //if (openFileDialog.ShowDialog() == DialogResult.OK)
+            //{
+            //    // 讀取選擇的文件的內容
+            //    string jsonConfig = File.ReadAllText(openFileDialog.FileName);
+            //    mainConfig1 = JsonConvert.DeserializeObject<MainConfig>(jsonConfig);
+            //}
 
 
+            string json = File.ReadAllText($"{typeFilePath}cof.json");
 
-            // 顯示對話框
-            if (openFileDialog.ShowDialog() == DialogResult.OK)
-            {
-                // 讀取選擇的文件的內容
-                string jsonConfig = System.IO.File.ReadAllText(openFileDialog.FileName);
-                mainConfig1 = JsonConvert.DeserializeObject<MainConfig>(jsonConfig);
-            }
+            mainConfig1 = JsonConvert.DeserializeObject<MainConfig>(json);
 
 
             if (mainConfig1 != null)
             {
-                //CreateButtons();
-                UpdateButtonLabels(mainConfig1, groupBox7);
-
-                GetButtonStatesAsJson(mainConfig1, groupBox7);
+        
+                UpdateButtonLabels(mainConfig1, groupBox_io);
+                ExportQCreport();
             }
 
 
@@ -341,7 +346,7 @@ namespace PQCDEMO
                 {
                     // 檢查IO狀態並更新按鈕顏色
                     CheckAndUpdateIOStatus();
-        
+
 
                     Thread.Sleep(100);
                 }
@@ -361,7 +366,7 @@ namespace PQCDEMO
             else
             {
 
-                foreach (Control panelControl in groupBox7.Controls)
+                foreach (Control panelControl in groupBox_io.Controls)
                 {
                     if (panelControl is Panel panel)
                     {
@@ -472,42 +477,20 @@ namespace PQCDEMO
             axisZController.UpdateStatus();
 
         }
-        void test()
-        {
-            axisXController.UpdateStatus();
-
-            HashSet<int> functionPositionsToCheck = new HashSet<int>
-        {
-            0, // RDY
-            2, // +EL
-            4, // ORG
-            6  // EMG
-        };
-
-            bool allFunctionsActive = axisXController.AreAllFunctionsActive(functionPositionsToCheck);
-            bool allFunctionsActive2 = axisYController.AreAllFunctionsActive(functionPositionsToCheck);
-            bool allFunctionsActive3 = axisZController.AreAllFunctionsActive(functionPositionsToCheck);
-            int axisStatus = 0;
-            foreach (int position in functionPositionsToCheck)
-            {
-                axisStatus |= (1 << position);
-            }
-
-            string message = allFunctionsActive
-                ? $"所有指定的功能位置都處於活動狀態。AxisStatus: 0x{axisStatus:X}"
-                : $"有一些或所有指定的功能位置不處於活動狀態。AxisStatus: 0x{axisStatus:X}";
-
-            MessageBox.Show(message, allFunctionsActive ? "提示" : "錯誤", MessageBoxButtons.OK, allFunctionsActive ? MessageBoxIcon.Information : MessageBoxIcon.Warning);
-
-        }
-
-        private void Form1_Load(object sender, EventArgs e)
-        {
-
-        }
+     
 
         private void button2_Click_1(object sender, EventArgs e)
         {
+
+
+            ExportQCreport();
+
+
+
+
+        }
+
+        private void oldexportconfig() {
 
 
             MainConfig mainConfig = new MainConfig();
@@ -525,15 +508,6 @@ namespace PQCDEMO
 
 
             File.WriteAllText("config.json", json);
-
-
-            /* string jsonFromFile = File.ReadAllText("config.json");
-              MainConfig deserializedConfig = JsonConvert.DeserializeObject<MainConfig>(jsonFromFile);
-
-
-              IOBoardConfig ioBoardConfig = deserializedConfig.IOB;
-              List<AxisConfig> axisConfigs = deserializedConfig.AxisConfigs;*/
-
         }
 
         private void button3_Click_1(object sender, EventArgs e)
@@ -625,15 +599,21 @@ namespace PQCDEMO
                 File.Copy(sourceFilePath + name, $"{targetUrl}/{name}");
             }
         }
-
+        /// <summary>
+        /// Madata比對
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void button5_Click(object sender, EventArgs e)
         {
+            Button clickedButton = (Button)sender; // 強制轉型為 Button
+
             var str1 = ReadXmlString($"{sourceFilePath}/MData.xml");
             var str2 = ReadXmlString($"{sourceFilePath}/MData_Modify.xml");
             var bl = mappingConfigXml(str1, str2);
 
             if (bl)
-                button5.BackColor = Color.GreenYellow;
+                clickedButton.BackColor = Color.GreenYellow; // 使用點擊的按鈕
         }
 
 
@@ -667,7 +647,7 @@ namespace PQCDEMO
 
         private void button28_Click(object sender, EventArgs e)
         {
-            ToggleGroup(groupBox7);
+            ToggleGroup(groupBox_io);
         }
 
         private void button1_Click_1(object sender, EventArgs e)
