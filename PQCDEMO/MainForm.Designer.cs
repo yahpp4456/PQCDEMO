@@ -1,6 +1,6 @@
 ﻿namespace PQCDEMO
 {
-    partial class Form1
+    partial class MainForm
     {
         /// <summary>
         ///  Required designer variable.
@@ -113,9 +113,9 @@
             // 
             // button1
             // 
-            button1.Location = new Point(687, 152);
+            button1.Location = new Point(623, 99);
             button1.Name = "button1";
-            button1.Size = new Size(114, 167);
+            button1.Size = new Size(149, 129);
             button1.TabIndex = 0;
             button1.Text = "Test";
             button1.UseVisualStyleBackColor = true;
@@ -130,7 +130,7 @@
             groupBox1.Controls.Add(pictureBox1);
             groupBox1.Location = new Point(12, 12);
             groupBox1.Name = "groupBox1";
-            groupBox1.Size = new Size(643, 145);
+            groupBox1.Size = new Size(558, 145);
             groupBox1.TabIndex = 1;
             groupBox1.TabStop = false;
             groupBox1.Text = "軸卡";
@@ -175,7 +175,7 @@
             // 
             pictureBox1.Dock = DockStyle.Right;
             pictureBox1.Image = Properties.Resources.M114;
-            pictureBox1.Location = new Point(490, 23);
+            pictureBox1.Location = new Point(405, 23);
             pictureBox1.Name = "pictureBox1";
             pictureBox1.Size = new Size(150, 119);
             pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
@@ -189,14 +189,14 @@
             groupBox2.Controls.Add(pictureBox2);
             groupBox2.Location = new Point(12, 162);
             groupBox2.Name = "groupBox2";
-            groupBox2.Size = new Size(643, 145);
+            groupBox2.Size = new Size(561, 145);
             groupBox2.TabIndex = 2;
             groupBox2.TabStop = false;
             groupBox2.Text = "IO卡";
             // 
             // button29
             // 
-            button29.Location = new Point(149, 34);
+            button29.Location = new Point(153, 33);
             button29.Name = "button29";
             button29.Size = new Size(124, 80);
             button29.TabIndex = 8;
@@ -206,7 +206,7 @@
             // 
             // button28
             // 
-            button28.Location = new Point(7, 34);
+            button28.Location = new Point(23, 33);
             button28.Name = "button28";
             button28.Size = new Size(124, 80);
             button28.TabIndex = 7;
@@ -218,7 +218,7 @@
             // 
             pictureBox2.Dock = DockStyle.Right;
             pictureBox2.Image = Properties.Resources.DP;
-            pictureBox2.Location = new Point(490, 23);
+            pictureBox2.Location = new Point(408, 23);
             pictureBox2.Name = "pictureBox2";
             pictureBox2.Size = new Size(150, 119);
             pictureBox2.SizeMode = PictureBoxSizeMode.Zoom;
@@ -728,7 +728,7 @@
             groupBox6.FlatStyle = FlatStyle.System;
             groupBox6.Location = new Point(9, 313);
             groupBox6.Name = "groupBox6";
-            groupBox6.Size = new Size(643, 145);
+            groupBox6.Size = new Size(564, 145);
             groupBox6.TabIndex = 5;
             groupBox6.TabStop = false;
             groupBox6.Text = "DW";
@@ -737,7 +737,7 @@
             // 
             pictureBox3.Dock = DockStyle.Right;
             pictureBox3.Image = Properties.Resources.DP;
-            pictureBox3.Location = new Point(490, 23);
+            pictureBox3.Location = new Point(411, 23);
             pictureBox3.Name = "pictureBox3";
             pictureBox3.Size = new Size(150, 119);
             pictureBox3.SizeMode = PictureBoxSizeMode.Zoom;
@@ -748,10 +748,10 @@
             // 
             button3.FlatStyle = FlatStyle.Popup;
             button3.Font = new Font("Microsoft JhengHei UI", 20F, FontStyle.Regular, GraphicsUnit.Point);
-            button3.Location = new Point(4, 24);
+            button3.Location = new Point(35, 24);
             button3.Margin = new Padding(1);
             button3.Name = "button3";
-            button3.Size = new Size(474, 102);
+            button3.Size = new Size(349, 102);
             button3.TabIndex = 0;
             button3.Text = "Get DediWareLog";
             button3.UseVisualStyleBackColor = true;
@@ -759,7 +759,7 @@
             // 
             // button2
             // 
-            button2.Location = new Point(687, 377);
+            button2.Location = new Point(645, 315);
             button2.Name = "button2";
             button2.Size = new Size(114, 167);
             button2.TabIndex = 6;
@@ -767,7 +767,7 @@
             button2.UseVisualStyleBackColor = true;
             button2.Click += button2_Click_1;
             // 
-            // Form1
+            // MainForm
             // 
             AutoScaleDimensions = new SizeF(9F, 19F);
             AutoScaleMode = AutoScaleMode.Font;
@@ -781,8 +781,10 @@
             Controls.Add(groupBox1);
             FormBorderStyle = FormBorderStyle.Fixed3D;
             MaximizeBox = false;
-            Name = "Form1";
+            Name = "MainForm";
             Text = "PQC";
+            FormClosing += MainForm_FormClosing;
+            FormClosed += MainForm_Closed;
             groupBox1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             groupBox2.ResumeLayout(false);

@@ -12,16 +12,21 @@ using System.Configuration;
 using System.Xml.Linq;
 using PQCDEMO.Model;
 using static System.Windows.Forms.AxHost;
+using System.Text;
+using System.Data;
+using System.Threading;
+
 namespace PQCDEMO
 {
 
-    public partial class Form1 : Form
+    public partial class MainForm : Form
     {
         private AxisController axisXController;
         private AxisController axisYController;
         private AxisController axisZController;
 
-        private MainConfig mainConfig1 = new MainConfig();
+
+        private MainConfig mainConfig = new MainConfig();//主要配置文件
         //private ApplicationConfig appConfig;
         private static bool _isdemo = true;
         private MotionController _m114 = new MotionController(_isdemo);
@@ -36,7 +41,7 @@ namespace PQCDEMO
         string needDataPeriod = ConfigurationManager.AppSettings["needDataPeriod"];
 
         string typeFilePath = ConfigurationManager.AppSettings["typeFilePath"];
-        public Form1()
+        public MainForm()
         {
 
             InitializeComponent();
@@ -46,6 +51,9 @@ namespace PQCDEMO
 
             LoadConfig();
             groupBoxes.Add(groupBox_io);
+
+            StartUpdatingThread();
+            StartIOStatusCheckingThread();
 
         }
         string[] texts = { "X", "Y", "Z" };
@@ -170,22 +178,22 @@ namespace PQCDEMO
                 .Select(btn => new
                 {
                     Tag = btn.Tag.ToString(),
-                    IoItem = mainConfig1.IOConfig.Inputs.Concat(mainConfig1.IOConfig.Outputs)
-                               .FirstOrDefault(item => item.Tag == btn.Tag.ToString())
+                    IoItem = mainConfig.IOConfig.Inputs.Concat(mainConfig.IOConfig.Outputs)
+                    .FirstOrDefault(item => item.Tag == btn.Tag.ToString())
                 })
                 .Where(x => x.IoItem != null)
                 .Select(x => new IO_State
                 {
                     Tag = x.Tag,
                     Id = x.IoItem.Id,
-                    State = pCE_D122Wrapper.ReadInputBit(x.IoItem.Id) // 
+                    State = pCE_D122Wrapper.ReadInputBit(x.IoItem.Id)
 
                 })
                 .ToList();
 
-            //        // 添加 AxisConfigs 成員的示例數據
+            //添加 AxisConfigs 成員的示例數據
             var axisConfigs = new List<AxisConfig>{
-            //
+
            new AxisConfig(axisXController.AxisName, axisXController.AxisStatus),
            new AxisConfig(axisYController.AxisName, axisYController.AxisStatus),
            new AxisConfig(axisZController.AxisName, axisZController.AxisStatus)
@@ -205,13 +213,13 @@ namespace PQCDEMO
         }
 
 
-        public bool CompareButtonStatesWithJson(MainConfig mainConfig, GroupBox groupBox)
+        public object CompareButtonStatesWithJson(MainConfig mainConfig, GroupBox groupBox)
         {
             // 讀取之前生成的JSON檔案
             string json = File.ReadAllText("QCreport.json");
 
-            // 將JSON轉換為List<IO_State>
-            List<IO_State> savedStates = JsonConvert.DeserializeObject<List<IO_State>>(json);
+            // 將JSON轉換為ReportData對象
+            ReportData savedData = JsonConvert.DeserializeObject<ReportData>(json);
 
             // 獲取當前按鈕的狀態
             var currentStates = groupBox.Controls
@@ -228,22 +236,208 @@ namespace PQCDEMO
                 {
                     Tag = x.Tag,
                     Id = x.IoItem.Id,
-                    State = false // 假设一个函数来读取按钮的状态
+                    State = pCE_D122Wrapper.ReadInputBit(x.IoItem.Id)
                 })
                 .ToList();
 
-            // 比對當前按鈕狀態與之前存儲的狀態
-            bool isEqual = savedStates.Count == currentStates.Count &&
-                           savedStates.All(savedState =>
-                               currentStates.Any(currentState =>
-                                   savedState.Tag == currentState.Tag &&
-                                   savedState.Id == currentState.Id &&
-                                   savedState.State == currentState.State
-                               )
-                           );
+            // 獲取當前的AxisConfigs狀態
+            var currentAxisConfigs = new List<AxisConfig>{
+        new AxisConfig(axisXController.AxisName, axisXController.AxisStatus),
+        new AxisConfig(axisYController.AxisName, axisYController.AxisStatus),
+        new AxisConfig(axisZController.AxisName, axisZController.AxisStatus)
+    };
 
-            return isEqual;
+            var ioStateDifferences = new List<object>();
+            var axisConfigDifferences = new List<object>();
+
+            // 比對IO狀態
+            foreach (var savedState in savedData.IOStates)
+            {
+                var currentState = currentStates.FirstOrDefault(cs => cs.Tag == savedState.Tag && cs.Id == savedState.Id);
+                if (currentState == null || currentState.State != savedState.State)
+                {
+                    ioStateDifferences.Add(new
+                    {
+                        Tag = savedState.Tag,
+                        Id = savedState.Id,
+                        SavedState = savedState.State,
+                        CurrentState = currentState != null ? currentState.State : false
+                    });
+                }
+            }
+
+            // 比對Axis配置
+            foreach (var savedConfig in savedData.AxisConfigs)
+            {
+                var currentConfig = currentAxisConfigs.FirstOrDefault(cc => cc.AxisName == savedConfig.AxisName);
+                if (currentConfig == null || currentConfig.AxisStatus != savedConfig.AxisStatus)
+                {
+                    axisConfigDifferences.Add(new
+                    {
+                        AxisName = savedConfig.AxisName,
+                        SavedStatus = savedConfig.AxisStatus,
+                        CurrentStatus = currentConfig != null ? currentConfig.AxisStatus : (UInt16)0
+                    });
+                }
+            }
+
+            return new { IOStateDifferences = ioStateDifferences, AxisConfigDifferences = axisConfigDifferences };
         }
+
+
+
+
+
+        public DataTable CompareButtonStatesWithJson3(MainConfig mainConfig, GroupBox groupBox)
+        {
+            // 讀取JSON文件並反序列化
+            string json = File.ReadAllText("QCreport.json");
+            ReportData savedData = JsonConvert.DeserializeObject<ReportData>(json);
+
+
+            // 獲取當前按鈕的狀態
+            var currentStates = groupBox.Controls
+                .OfType<Panel>()
+                .SelectMany(panel => panel.Controls.OfType<Button>())
+                .Select(btn => new
+                {
+                    Tag = btn.Tag.ToString(),
+                    IoItem = mainConfig.IOConfig.Inputs.Concat(mainConfig.IOConfig.Outputs)
+                                .FirstOrDefault(item => item.Tag == btn.Tag.ToString())
+                })
+                .Where(x => x.IoItem != null)
+                .Select(x => new IO_State
+                {
+                    Tag = x.Tag,
+                    Id = x.IoItem.Id,
+                    State = pCE_D122Wrapper.ReadInputBit(x.IoItem.Id)
+                })
+                .ToList();
+
+            // 獲取當前的AxisConfigs狀態
+            var currentAxisConfigs = new List<AxisConfig>{
+        new AxisConfig(axisXController.AxisName, axisXController.AxisStatus),
+        new AxisConfig(axisYController.AxisName, axisYController.AxisStatus),
+        new AxisConfig(axisZController.AxisName, axisZController.AxisStatus)
+    };
+
+
+
+            // 創建並設置DataTable
+            DataTable differencesTable = new DataTable();
+            differencesTable.Columns.Add("類型", typeof(string));
+            differencesTable.Columns.Add("標籤/名稱", typeof(string));
+            differencesTable.Columns.Add("ID/狀態", typeof(string));
+            differencesTable.Columns.Add("標準狀態", typeof(string));
+            differencesTable.Columns.Add("當前狀態", typeof(string));
+
+            // 比對IO狀態
+            foreach (var savedState in savedData.IOStates)
+            {
+                var currentState = currentStates.FirstOrDefault(cs => cs.Tag == savedState.Tag && cs.Id == savedState.Id);
+                if (currentState == null || currentState.State != savedState.State)
+                {
+                    differencesTable.Rows.Add(
+                        "IO狀態",
+                        savedState.Tag,
+                        savedState.Id,
+                        savedState.State.ToString(),
+                        currentState != null ? currentState.State.ToString() : "不存在"
+                    );
+                }
+            }
+
+            // 比對Axis配置
+            foreach (var savedConfig in savedData.AxisConfigs)
+            {
+                var currentConfig = currentAxisConfigs.FirstOrDefault(cc => cc.AxisName == savedConfig.AxisName);
+                if (currentConfig == null || currentConfig.AxisStatus != savedConfig.AxisStatus)
+                {
+                    differencesTable.Rows.Add(
+                        "軸配置",
+                        savedConfig.AxisName,
+                        "-",
+                        savedConfig.AxisStatus.ToString(),
+                        currentConfig != null ? currentConfig.AxisStatus.ToString() : "不存在"
+                    );
+                }
+            }
+
+            return differencesTable;
+        }
+
+
+
+
+
+        public class ReportData
+        {
+            public List<IO_State> IOStates { get; set; }
+            public List<AxisConfig> AxisConfigs { get; set; }
+        }
+        public class IO_State
+        {
+            public int Id { get; set; }
+            public string Tag { get; set; }
+            public bool State { get; set; }
+        }
+
+        public bool CompareButtonStatesWithJson2(MainConfig mainConfig, GroupBox groupBox)
+        {
+            // 讀取之前生成的JSON檔案
+            string json = File.ReadAllText("QCreport.json");
+
+            // 將JSON轉換為ReportData對象
+            ReportData savedData = JsonConvert.DeserializeObject<ReportData>(json);
+
+            // 獲取當前按鈕的狀態
+            var currentStates = groupBox.Controls
+                .OfType<Panel>()
+                .SelectMany(panel => panel.Controls.OfType<Button>())
+                .Select(btn => new
+                {
+                    Tag = btn.Tag.ToString(),
+                    IoItem = mainConfig.IOConfig.Inputs.Concat(mainConfig.IOConfig.Outputs)
+                                .FirstOrDefault(item => item.Tag == btn.Tag.ToString())
+                })
+                .Where(x => x.IoItem != null)
+                .Select(x => new IO_State
+                {
+                    Tag = x.Tag,
+                    Id = x.IoItem.Id,
+                    State = pCE_D122Wrapper.ReadInputBit(x.IoItem.Id)
+                })
+                .ToList();
+
+            // 獲取當前的AxisConfigs狀態
+            var currentAxisConfigs = new List<AxisConfig>{
+        new AxisConfig(axisXController.AxisName, axisXController.AxisStatus),
+        new AxisConfig(axisYController.AxisName, axisYController.AxisStatus),
+        new AxisConfig(axisZController.AxisName, axisZController.AxisStatus)
+    };
+
+            // 比對當前按鈕狀態與之前存儲的狀態
+            bool ioStatesEqual = savedData.IOStates.Count == currentStates.Count &&
+                                 savedData.IOStates.All(savedState =>
+                                     currentStates.Any(currentState =>
+                                         savedState.Tag == currentState.Tag &&
+                                         savedState.Id == currentState.Id &&
+                                         savedState.State == currentState.State
+                                     )
+                                 );
+
+            // 比對當前AxisConfigs與之前存儲的狀態
+            bool axisConfigsEqual = savedData.AxisConfigs.Count == currentAxisConfigs.Count &&
+                                    savedData.AxisConfigs.All(savedConfig =>
+                                        currentAxisConfigs.Any(currentConfig =>
+                                            savedConfig.AxisName == currentConfig.AxisName &&
+                                            savedConfig.AxisStatus == currentConfig.AxisStatus
+                                        )
+                                    );
+
+            return ioStatesEqual && axisConfigsEqual;
+        }
+
 
         private void LoadConfig()
         {
@@ -255,7 +449,7 @@ namespace PQCDEMO
             //openFileDialog.Filter = "JSON文件 (*.json)|*.json"; // 篩選只顯示JSON文件
             //openFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments); // 設置初始目錄
 
-           
+
 
             //// 顯示對話框
             //if (openFileDialog.ShowDialog() == DialogResult.OK)
@@ -268,13 +462,13 @@ namespace PQCDEMO
 
             string json = File.ReadAllText($"{typeFilePath}cof.json");
 
-            mainConfig1 = JsonConvert.DeserializeObject<MainConfig>(json);
+            mainConfig = JsonConvert.DeserializeObject<MainConfig>(json);
 
 
-            if (mainConfig1 != null)
+            if (mainConfig != null)
             {
-        
-                UpdateButtonLabels(mainConfig1, groupBox_io);
+
+                UpdateButtonLabels(mainConfig, groupBox_io);
                 ExportQCreport();
             }
 
@@ -321,44 +515,44 @@ namespace PQCDEMO
             }
         }
 
-
+        private object threadLock = new object();
         private void CheckAndUpdateIOStatus()
         {
-            //在這裡檢查IO狀態並更新按鈕的顏色
-            foreach (var input in mainConfig1.IOConfig.Inputs)
+        
+
+            foreach (var input in mainConfig.IOConfig.Inputs)
             {
                 bool inputState = pCE_D122Wrapper.ReadInputBit(input.Id);
                 UpdateButtonColor(input, inputState);
             }
 
-            foreach (var output in mainConfig1.IOConfig.Outputs)
-            {
-                // 如果您需要檢查輸出的狀態，也可以在這裡添加相應的代碼
-            }
-        }
 
+            //foreach (var output in mainConfig.IOConfig.Outputs)
+            //{
+            //    // 如果您需要檢查輸出的狀態，也可以在這裡添加相應的代碼
+            //}
+        }
+        Thread ioThread;
         private void StartIOStatusCheckingThread()
         {
-            // 創建一個新的執行緒
-            Thread ioThread = new Thread(() =>
+            ioThread = new Thread(() =>
             {
-                while (true)
-                {
-                    // 檢查IO狀態並更新按鈕顏色
-                    CheckAndUpdateIOStatus();
 
-
-                    Thread.Sleep(100);
-                }
+                while (!stopthread) { CheckAndUpdateIOStatus(); }
+              
+                   
             });
+
             ioThread.IsBackground = true;
-            // 啟動執行緒
             ioThread.Start();
         }
         private void UpdateButtonColor(IOItem ioitem, bool status)
         {
-            // 在这里更新按钮的颜色，根据IO状态
-            if (InvokeRequired)
+
+            if (IsHandleCreated && !IsDisposed)
+            { 
+                // 在这里更新按钮的颜色，根据IO状态
+                if (InvokeRequired)
             {
                 // 如果需要在UI线程上更新按钮，请使用Invoke方法
                 Invoke(new Action(() => UpdateButtonColor(ioitem, status)));
@@ -387,7 +581,7 @@ namespace PQCDEMO
 
             }
         }
-
+        }
         private void InputButtonClick(IOItem ioItem)
         {
             bool state = pCE_D122Wrapper.ReadInputBit(ioItem.Id);
@@ -437,30 +631,105 @@ namespace PQCDEMO
              lab.Location = new Point(x, y);
 
          }*/
+        private CancellationTokenSource cts = new CancellationTokenSource();
+        private void StopThreads()
+        {
+            cts.Cancel();
+        }
+        private async Task StartUpdatingThreadAsync()
+        {
+            await Task.Run(() =>
+            {
+                while (!cts.Token.IsCancellationRequested)
+                {
+                    getAxisStatus();
+                    Task.Delay(100).Wait();
+                }
+            }, cts.Token);
+        }
 
+        private async Task StartIOStatusCheckingThreadAsync()
+        {
+            await Task.Run(() =>
+            {
+                while (!cts.Token.IsCancellationRequested)
+                {
+                    CheckAndUpdateIOStatus();
+                    Task.Delay(100).Wait();
+                }
+            }, cts.Token);
+        }
+
+
+        private void t()
+        {
+            var result = CompareButtonStatesWithJson(mainConfig, groupBox_io);
+            var differences = (dynamic)result;
+            StringBuilder message = new StringBuilder();
+
+            if (differences.IOStateDifferences.Count > 0 || differences.AxisConfigDifferences.Count > 0)
+            {
+                message.AppendLine("發現以下差異：");
+
+                foreach (var diff in differences.IOStateDifferences)
+                {
+                    message.AppendLine($"IO狀態差異 - 標籤: {diff.Tag}, ID: {diff.Id}, 保存狀態: {diff.SavedState}, 當前狀態: {diff.CurrentState}");
+                }
+
+                foreach (var diff in differences.AxisConfigDifferences)
+                {
+                    message.AppendLine($"軸配置差異 - 名稱: {diff.AxisName}, 保存狀態: {diff.SavedStatus}, 當前狀態: {diff.CurrentStatus}");
+                }
+
+                MessageBox.Show(message.ToString(), "比對結果", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+            else
+            {
+                MessageBox.Show("所有項目均匹配！", "比對結果", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+        }
+
+        private void t2()
+        {
+
+            DataTable differencesTable = CompareButtonStatesWithJson3(mainConfig,groupBox_io);
+
+            if (differencesTable.Rows.Count > 0)
+            {
+                DifferencesForm differencesForm = new DifferencesForm();
+                differencesForm.DataGridView.DataSource = differencesTable;
+                differencesForm.ShowDialog();
+            }
+            else
+            {
+                MessageBox.Show("所有項目均匹配！", "比對結果", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+
+        }
         private void button1_Click(object sender, EventArgs e)
         {
             try
             {
-                StartUpdatingThread();//軸
-                StartIOStatusCheckingThread();
+                t2();
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"發生錯誤: {ex.Message}", "錯誤", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+        Thread updateThread ;
         public void StartUpdatingThread()
         {
-            Thread updateThread = new Thread(UpdateStatusLoop);
+            updateThread = new Thread(UpdateStatusLoop);
             updateThread.IsBackground = true;
             updateThread.Start();
         }
 
+        private bool stopthread = false;
         // 定期更新状态的循环
         private void UpdateStatusLoop()
         {
-            while (true)
+            while (!stopthread)
             {
 
                 getAxisStatus();
@@ -477,7 +746,7 @@ namespace PQCDEMO
             axisZController.UpdateStatus();
 
         }
-     
+
 
         private void button2_Click_1(object sender, EventArgs e)
         {
@@ -490,25 +759,7 @@ namespace PQCDEMO
 
         }
 
-        private void oldexportconfig() {
 
-
-            MainConfig mainConfig = new MainConfig();
-            mainConfig.IOConfig = mainConfig1.IOConfig;
-
-            AxisConfig axis1Config = new AxisConfig(axisXController.AxisName, axisXController.AxisStatus);
-            AxisConfig axis2Config = new AxisConfig(axisYController.AxisName, axisYController.AxisStatus);
-            AxisConfig axis3Config = new AxisConfig(axisZController.AxisName, axisZController.AxisStatus);
-
-            mainConfig.AxisConfigs.Add(axis1Config);
-            mainConfig.AxisConfigs.Add(axis2Config);
-            mainConfig.AxisConfigs.Add(axis3Config);
-
-            string json = JsonConvert.SerializeObject(mainConfig);
-
-
-            File.WriteAllText("config.json", json);
-        }
 
         private void button3_Click_1(object sender, EventArgs e)
         {
@@ -650,16 +901,27 @@ namespace PQCDEMO
             ToggleGroup(groupBox_io);
         }
 
-        private void button1_Click_1(object sender, EventArgs e)
-        {
-
-        }
 
         private void button29_Click(object sender, EventArgs e)
         {
             //UpdateButtonColor();
+            stopthread = true;
+
+            ioThread.Join();
+            this.Close();
         }
 
+        private void MainForm_Closed(object sender, FormClosedEventArgs e)
+        {
+        
+        }
+
+        private  void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+
+        { 
+      
+        }
+    
         //private void button2_Click_1(object sender, EventArgs e)
         //{
 

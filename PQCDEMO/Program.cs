@@ -13,7 +13,7 @@ namespace PQCDEMO
             if (mutex.WaitOne(TimeSpan.Zero, true))
             {
                 ApplicationConfiguration.Initialize();
-                Application.Run(new Form1());
+                Application.Run(new MainForm());
                 mutex.ReleaseMutex();
             }
             else
