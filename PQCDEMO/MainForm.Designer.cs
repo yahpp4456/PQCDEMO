@@ -28,13 +28,13 @@
         /// </summary>
         private void InitializeComponent()
         {
-            button1 = new Button();
-            groupBox1 = new GroupBox();
+            GroupBox groupBox1;
             button_Z = new Button();
             button_Y = new Button();
             button_X = new Button();
             groupBox4 = new GroupBox();
             pictureBox1 = new PictureBox();
+            button1 = new Button();
             groupBox2 = new GroupBox();
             button29 = new Button();
             button28 = new Button();
@@ -85,10 +85,8 @@
             button7 = new Button();
             button6 = new Button();
             button4 = new Button();
-            groupBox6 = new GroupBox();
-            pictureBox3 = new PictureBox();
-            button3 = new Button();
             button2 = new Button();
+            groupBox1 = new GroupBox();
             groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             groupBox2.SuspendLayout();
@@ -107,19 +105,7 @@
             panel13.SuspendLayout();
             panel7.SuspendLayout();
             panel2.SuspendLayout();
-            groupBox6.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)pictureBox3).BeginInit();
             SuspendLayout();
-            // 
-            // button1
-            // 
-            button1.Location = new Point(623, 99);
-            button1.Name = "button1";
-            button1.Size = new Size(149, 129);
-            button1.TabIndex = 0;
-            button1.Text = "Test";
-            button1.UseVisualStyleBackColor = true;
-            button1.Click += button1_Click;
             // 
             // groupBox1
             // 
@@ -128,6 +114,7 @@
             groupBox1.Controls.Add(button_X);
             groupBox1.Controls.Add(groupBox4);
             groupBox1.Controls.Add(pictureBox1);
+            groupBox1.ForeColor = Color.Black;
             groupBox1.Location = new Point(12, 12);
             groupBox1.Name = "groupBox1";
             groupBox1.Size = new Size(558, 145);
@@ -146,7 +133,7 @@
             // 
             // button_Y
             // 
-            button_Y.Location = new Point(162, 45);
+            button_Y.Location = new Point(163, 45);
             button_Y.Name = "button_Y";
             button_Y.Size = new Size(94, 80);
             button_Y.TabIndex = 6;
@@ -182,11 +169,22 @@
             pictureBox1.TabIndex = 0;
             pictureBox1.TabStop = false;
             // 
+            // button1
+            // 
+            button1.Location = new Point(12, 335);
+            button1.Name = "button1";
+            button1.Size = new Size(147, 81);
+            button1.TabIndex = 0;
+            button1.Text = "Test";
+            button1.UseVisualStyleBackColor = true;
+            button1.Click += button1_Click;
+            // 
             // groupBox2
             // 
             groupBox2.Controls.Add(button29);
             groupBox2.Controls.Add(button28);
             groupBox2.Controls.Add(pictureBox2);
+            groupBox2.ForeColor = Color.Black;
             groupBox2.Location = new Point(12, 162);
             groupBox2.Name = "groupBox2";
             groupBox2.Size = new Size(561, 145);
@@ -228,7 +226,7 @@
             // groupBox5
             // 
             groupBox5.Controls.Add(panel1);
-            groupBox5.Location = new Point(827, 18);
+            groupBox5.Location = new Point(622, 19);
             groupBox5.Name = "groupBox5";
             groupBox5.Size = new Size(444, 598);
             groupBox5.TabIndex = 4;
@@ -721,47 +719,11 @@
             button4.Text = "EMG";
             button4.UseVisualStyleBackColor = true;
             // 
-            // groupBox6
-            // 
-            groupBox6.Controls.Add(pictureBox3);
-            groupBox6.Controls.Add(button3);
-            groupBox6.FlatStyle = FlatStyle.System;
-            groupBox6.Location = new Point(9, 313);
-            groupBox6.Name = "groupBox6";
-            groupBox6.Size = new Size(564, 145);
-            groupBox6.TabIndex = 5;
-            groupBox6.TabStop = false;
-            groupBox6.Text = "DW";
-            // 
-            // pictureBox3
-            // 
-            pictureBox3.Dock = DockStyle.Right;
-            pictureBox3.Image = Properties.Resources.DP;
-            pictureBox3.Location = new Point(411, 23);
-            pictureBox3.Name = "pictureBox3";
-            pictureBox3.Size = new Size(150, 119);
-            pictureBox3.SizeMode = PictureBoxSizeMode.Zoom;
-            pictureBox3.TabIndex = 7;
-            pictureBox3.TabStop = false;
-            // 
-            // button3
-            // 
-            button3.FlatStyle = FlatStyle.Popup;
-            button3.Font = new Font("Microsoft JhengHei UI", 20F, FontStyle.Regular, GraphicsUnit.Point);
-            button3.Location = new Point(35, 24);
-            button3.Margin = new Padding(1);
-            button3.Name = "button3";
-            button3.Size = new Size(349, 102);
-            button3.TabIndex = 0;
-            button3.Text = "Get DediWareLog";
-            button3.UseVisualStyleBackColor = true;
-            button3.Click += button3_Click_1;
-            // 
             // button2
             // 
-            button2.Location = new Point(645, 315);
+            button2.Location = new Point(337, 425);
             button2.Name = "button2";
-            button2.Size = new Size(114, 167);
+            button2.Size = new Size(133, 65);
             button2.TabIndex = 6;
             button2.Text = "EXPORT";
             button2.UseVisualStyleBackColor = true;
@@ -771,10 +733,9 @@
             // 
             AutoScaleDimensions = new SizeF(9F, 19F);
             AutoScaleMode = AutoScaleMode.Font;
-            BackColor = Color.White;
-            ClientSize = new Size(1281, 629);
+            BackColor = Color.WhiteSmoke;
+            ClientSize = new Size(1087, 629);
             Controls.Add(button2);
-            Controls.Add(groupBox6);
             Controls.Add(groupBox5);
             Controls.Add(groupBox2);
             Controls.Add(button1);
@@ -803,8 +764,6 @@
             panel13.ResumeLayout(false);
             panel7.ResumeLayout(false);
             panel2.ResumeLayout(false);
-            groupBox6.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)pictureBox3).EndInit();
             ResumeLayout(false);
         }
 
@@ -819,9 +778,7 @@
         private Label label6;
         private GroupBox groupBox4;
         private GroupBox groupBox5;
-        private GroupBox groupBox6;
         private Button button2;
-        private Button button3;
         private Panel panel1;
         private GroupBox groupBox_axis;
         private Button button_X;
@@ -872,6 +829,5 @@
         private Button button4;
         private Button button29;
         private Button button28;
-        private PictureBox pictureBox3;
     }
 }

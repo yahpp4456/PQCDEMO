@@ -326,23 +326,32 @@ namespace PQCDEMO
             // 創建並設置DataTable
             DataTable differencesTable = new DataTable();
             differencesTable.Columns.Add("類型", typeof(string));
-            differencesTable.Columns.Add("標籤/名稱", typeof(string));
-            differencesTable.Columns.Add("ID/狀態", typeof(string));
-            differencesTable.Columns.Add("標準狀態", typeof(string));
-            differencesTable.Columns.Add("當前狀態", typeof(string));
+            differencesTable.Columns.Add("名稱", typeof(string));
+            differencesTable.Columns.Add("標準狀態碼", typeof(string));
+            differencesTable.Columns.Add("當前狀態碼", typeof(string));
+            differencesTable.Columns.Add("1", typeof(string));
+            differencesTable.Columns.Add("2", typeof(string));
+
 
             // 比對IO狀態
             foreach (var savedState in savedData.IOStates)
             {
                 var currentState = currentStates.FirstOrDefault(cs => cs.Tag == savedState.Tag && cs.Id == savedState.Id);
+                var currentIOItem = mainConfig.IOConfig.Inputs.Concat(mainConfig.IOConfig.Outputs)
+                      .FirstOrDefault(item => item.Id == savedState.Id);
+
+                string ioItemText = currentIOItem?.Text ?? "未知";
+                string ioItemName = currentIOItem?.Name ?? "未知";
+
                 if (currentState == null || currentState.State != savedState.State)
                 {
                     differencesTable.Rows.Add(
-                        "IO狀態",
+                        "IO點",
                         savedState.Tag,
-                        savedState.Id,
                         savedState.State.ToString(),
-                        currentState != null ? currentState.State.ToString() : "不存在"
+                        currentState != null ? currentState.State.ToString() : "不存在",
+                        ioItemText,  // 添加IOItem的文本
+                        ioItemName   // 添加IOItem的名稱
                     );
                 }
             }
@@ -354,9 +363,8 @@ namespace PQCDEMO
                 if (currentConfig == null || currentConfig.AxisStatus != savedConfig.AxisStatus)
                 {
                     differencesTable.Rows.Add(
-                        "軸配置",
+                        "軸",
                         savedConfig.AxisName,
-                        "-",
                         savedConfig.AxisStatus.ToString(),
                         currentConfig != null ? currentConfig.AxisStatus.ToString() : "不存在"
                     );
@@ -469,7 +477,7 @@ namespace PQCDEMO
             {
 
                 UpdateButtonLabels(mainConfig, groupBox_io);
-                ExportQCreport();
+                //ExportQCreport();
             }
 
 
@@ -518,7 +526,7 @@ namespace PQCDEMO
         private object threadLock = new object();
         private void CheckAndUpdateIOStatus()
         {
-        
+
 
             foreach (var input in mainConfig.IOConfig.Inputs)
             {
@@ -538,9 +546,14 @@ namespace PQCDEMO
             ioThread = new Thread(() =>
             {
 
-                while (!stopthread) { CheckAndUpdateIOStatus(); }
-              
-                   
+                while (!stopthread)
+                {
+                    CheckAndUpdateIOStatus();
+                    Thread.Sleep(500);
+                }
+
+
+
             });
 
             ioThread.IsBackground = true;
@@ -548,40 +561,72 @@ namespace PQCDEMO
         }
         private void UpdateButtonColor(IOItem ioitem, bool status)
         {
-
-            if (IsHandleCreated && !IsDisposed)
-            { 
-                // 在这里更新按钮的颜色，根据IO状态
-                if (InvokeRequired)
+            if (InvokeRequired)
             {
-                // 如果需要在UI线程上更新按钮，请使用Invoke方法
                 Invoke(new Action(() => UpdateButtonColor(ioitem, status)));
             }
             else
             {
-
-                foreach (Control panelControl in groupBox_io.Controls)
+                Button buttonToUpdate = FindButtonByTag(ioitem.Tag);
+                if (buttonToUpdate != null)
                 {
-                    if (panelControl is Panel panel)
-                    {
-
-                        foreach (Control control in panel.Controls)
-                        {
-
-                            if (control is Button button && (string)button.Tag == ioitem.Tag)
-                            {
-
-                                button.BackColor = status ? Color.LightGreen : Color.Green;
-                            }
-                        }
-
-                    }
+                    buttonToUpdate.BackColor = status ? Color.LightGreen : Color.Green;
                 }
-
-
             }
         }
+
+        private Button FindButtonByTag(string tag)
+        {
+            foreach (Control panelControl in groupBox_io.Controls)
+            {
+                if (panelControl is Panel panel)
+                {
+                    foreach (Control control in panel.Controls)
+                    {
+                        if (control is Button button && (string)button.Tag == tag)
+                        {
+                            return button;
+                        }
+                    }
+                }
+            }
+            return null;
         }
+        //private void UpdateButtonColor(IOItem ioitem, bool status)
+        //{
+
+
+        //        // 在这里更新按钮的颜色，根据IO状态
+        //        if (InvokeRequired)
+        //    {
+        //        // 如果需要在UI线程上更新按钮，请使用Invoke方法
+        //        Invoke(new Action(() => UpdateButtonColor(ioitem, status)));
+        //    }
+        //    else
+        //    {
+
+        //        foreach (Control panelControl in groupBox_io.Controls)
+        //        {
+        //            if (panelControl is Panel panel)
+        //            {
+
+        //                foreach (Control control in panel.Controls)
+        //                {
+
+        //                    if (control is Button button && (string)button.Tag == ioitem.Tag)
+        //                    {
+
+        //                        button.BackColor = status ? Color.LightGreen : Color.Green;
+        //                    }
+        //                }
+
+        //            }
+        //        }
+
+
+        //    }
+
+        //}
         private void InputButtonClick(IOItem ioItem)
         {
             bool state = pCE_D122Wrapper.ReadInputBit(ioItem.Id);
@@ -692,7 +737,7 @@ namespace PQCDEMO
         private void t2()
         {
 
-            DataTable differencesTable = CompareButtonStatesWithJson3(mainConfig,groupBox_io);
+            DataTable differencesTable = CompareButtonStatesWithJson3(mainConfig, groupBox_io);
 
             if (differencesTable.Rows.Count > 0)
             {
@@ -717,7 +762,7 @@ namespace PQCDEMO
                 MessageBox.Show($"發生錯誤: {ex.Message}", "錯誤", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-        Thread updateThread ;
+        Thread updateThread;
         public void StartUpdatingThread()
         {
             updateThread = new Thread(UpdateStatusLoop);
@@ -725,7 +770,7 @@ namespace PQCDEMO
             updateThread.Start();
         }
 
-        private bool stopthread = false;
+        bool stopthread = false;
         // 定期更新状态的循环
         private void UpdateStatusLoop()
         {
@@ -734,7 +779,7 @@ namespace PQCDEMO
 
                 getAxisStatus();
 
-                Thread.Sleep(100);
+                Thread.Sleep(500);
             }
         }
 
@@ -760,7 +805,11 @@ namespace PQCDEMO
         }
 
 
-
+        /// <summary>
+        /// DediWareLog
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void button3_Click_1(object sender, EventArgs e)
         {
             DirectoryInfo root = new DirectoryInfo(sourceFilePath);
@@ -904,24 +953,51 @@ namespace PQCDEMO
 
         private void button29_Click(object sender, EventArgs e)
         {
-            //UpdateButtonColor();
+
             stopthread = true;
 
-            ioThread.Join();
+
+            // 如果執行緒仍在運行，等待它完成
+            if (ioThread != null && ioThread.IsAlive)
+            {
+
+                ioThread.Join();
+            }
+
+
+            if (updateThread != null && updateThread.IsAlive)
+            {
+                updateThread.Join();
+            }
             this.Close();
         }
 
         private void MainForm_Closed(object sender, FormClosedEventArgs e)
         {
-        
+
         }
 
-        private  void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
 
-        { 
-      
+        {
+            stopthread = true;
+
+
+            // 如果執行緒仍在運行，等待它完成
+            if (ioThread != null && ioThread.IsAlive)
+            {
+
+                ioThread.Join();
+            }
+
+
+            //if (updateThread != null && updateThread.IsAlive)
+            //{
+            //    updateThread.Join();
+            //}
+
         }
-    
+
         //private void button2_Click_1(object sender, EventArgs e)
         //{
 
