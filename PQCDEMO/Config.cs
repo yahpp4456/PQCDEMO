@@ -57,6 +57,7 @@ namespace PQCDEMO
         public string Tag { get; set; } // 添加Tag属性
         public string Text { get; set; } // 添加Text属性
         public string Name { get; set; }
+        public string Remark { get; set; }
 
 
     }

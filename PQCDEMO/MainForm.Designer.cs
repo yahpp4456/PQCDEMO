@@ -142,12 +142,14 @@
             // 
             // button_X
             // 
+            button_X.BackColor = Color.White;
             button_X.Location = new Point(32, 45);
             button_X.Name = "button_X";
             button_X.Size = new Size(94, 80);
             button_X.TabIndex = 5;
             button_X.Text = "X";
-            button_X.UseVisualStyleBackColor = true;
+            button_X.UseVisualStyleBackColor = false;
+            button_X.Click += button_X_Click;
             // 
             // groupBox4
             // 
@@ -171,9 +173,10 @@
             // 
             // button1
             // 
-            button1.Location = new Point(12, 335);
+            button1.Font = new Font("Microsoft JhengHei UI", 48F, FontStyle.Regular, GraphicsUnit.Point);
+            button1.Location = new Point(12, 325);
             button1.Name = "button1";
-            button1.Size = new Size(147, 81);
+            button1.Size = new Size(361, 289);
             button1.TabIndex = 0;
             button1.Text = "Test";
             button1.UseVisualStyleBackColor = true;
@@ -187,7 +190,7 @@
             groupBox2.ForeColor = Color.Black;
             groupBox2.Location = new Point(12, 162);
             groupBox2.Name = "groupBox2";
-            groupBox2.Size = new Size(561, 145);
+            groupBox2.Size = new Size(555, 145);
             groupBox2.TabIndex = 2;
             groupBox2.TabStop = false;
             groupBox2.Text = "IO卡";
@@ -215,8 +218,8 @@
             // pictureBox2
             // 
             pictureBox2.Dock = DockStyle.Right;
-            pictureBox2.Image = Properties.Resources.DP;
-            pictureBox2.Location = new Point(408, 23);
+            pictureBox2.Image = Properties.Resources.PCE_D122IS_SN_800x600;
+            pictureBox2.Location = new Point(402, 23);
             pictureBox2.Name = "pictureBox2";
             pictureBox2.Size = new Size(150, 119);
             pictureBox2.SizeMode = PictureBoxSizeMode.Zoom;
@@ -553,7 +556,7 @@
             button8.Size = new Size(50, 60);
             button8.TabIndex = 3;
             button8.Tag = "O05";
-            button8.Text = "真空";
+            button8.Text = "真空1";
             button8.UseVisualStyleBackColor = true;
             // 
             // button9
@@ -721,9 +724,9 @@
             // 
             // button2
             // 
-            button2.Location = new Point(337, 425);
+            button2.Location = new Point(379, 325);
             button2.Name = "button2";
-            button2.Size = new Size(133, 65);
+            button2.Size = new Size(194, 292);
             button2.TabIndex = 6;
             button2.Text = "EXPORT";
             button2.UseVisualStyleBackColor = true;
@@ -734,7 +737,7 @@
             AutoScaleDimensions = new SizeF(9F, 19F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.WhiteSmoke;
-            ClientSize = new Size(1087, 629);
+            ClientSize = new Size(1079, 629);
             Controls.Add(button2);
             Controls.Add(groupBox5);
             Controls.Add(groupBox2);

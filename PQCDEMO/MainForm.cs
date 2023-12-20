@@ -53,8 +53,8 @@ namespace PQCDEMO
             groupBoxes.Add(groupBox_io);
 
             StartUpdatingThread();
-            StartIOStatusCheckingThread();
-
+            //  StartIOStatusCheckingThread();
+            StartIOStatusCheckingThreadAsync();
         }
         string[] texts = { "X", "Y", "Z" };
         private void axisgroup(GroupBox groupBox)
@@ -109,27 +109,12 @@ namespace PQCDEMO
             // Toggle visibility of the group
             groupBox.Visible = !groupBox.Visible;
 
-            // Adjust the layout of visible groups
-            //Thread thread = new Thread(AdjustGroupLayoutThread);
-            //thread.Start();
             AdjustGroupLayout();
+
             groupBox.ResumeLayout(true);
 
         }
-        private void AdjustGroupLayoutThread()
-        {
-            // Check if we are on the UI thread
-            if (InvokeRequired)
-            {
-                // We are not on the UI thread, so use Invoke to call AdjustGroupLayout
-                Invoke(new Action(AdjustGroupLayout));
-            }
-            else
-            {
-                // We are on the UI thread, so call AdjustGroupLayout directly
-                AdjustGroupLayout();
-            }
-        }
+
 
         List<GroupBox> groupBoxes = new List<GroupBox> { };
         private void AdjustGroupLayout()
@@ -152,6 +137,7 @@ namespace PQCDEMO
                     // 檢查加上這個GroupBox後的總高度是否會超過面板的最大高度
                     if (currentHeight + groupBoxHeight > maxPanelHeight)
                     {
+                        groupBox.Visible = !groupBox.Visible;
                         // 如果加上這個GroupBox會超過最大高度，則停止添加
                         break;
                     }
@@ -329,8 +315,7 @@ namespace PQCDEMO
             differencesTable.Columns.Add("名稱", typeof(string));
             differencesTable.Columns.Add("標準狀態碼", typeof(string));
             differencesTable.Columns.Add("當前狀態碼", typeof(string));
-            differencesTable.Columns.Add("1", typeof(string));
-            differencesTable.Columns.Add("2", typeof(string));
+            differencesTable.Columns.Add("備註", typeof(string));
 
 
             // 比對IO狀態
@@ -340,8 +325,8 @@ namespace PQCDEMO
                 var currentIOItem = mainConfig.IOConfig.Inputs.Concat(mainConfig.IOConfig.Outputs)
                       .FirstOrDefault(item => item.Id == savedState.Id);
 
-                string ioItemText = currentIOItem?.Text ?? "未知";
-                string ioItemName = currentIOItem?.Name ?? "未知";
+                string ioItemRemark = currentIOItem?.Remark ?? "未知";
+        
 
                 if (currentState == null || currentState.State != savedState.State)
                 {
@@ -350,8 +335,7 @@ namespace PQCDEMO
                         savedState.Tag,
                         savedState.State.ToString(),
                         currentState != null ? currentState.State.ToString() : "不存在",
-                        ioItemText,  // 添加IOItem的文本
-                        ioItemName   // 添加IOItem的名稱
+                        ioItemRemark
                     );
                 }
             }
@@ -503,13 +487,14 @@ namespace PQCDEMO
                             if (ioItem != null)
                             {
                                 btn.Text = ioItem.Text;
-
+                                btn.TextAlign = ContentAlignment.MiddleCenter;
                                 // 如果是Input，添加点击事件并设置背景色
                                 if (mainConfig.IOConfig.Inputs.Any(input => input.Tag == buttonTag))
                                 {
                                     btn.Click += (sender, e) => InputButtonClick(ioItem);
                                     bool inputState = pCE_D122Wrapper.ReadInputBit(ioItem.Id);
                                     btn.BackColor = inputState ? Color.LightGreen : Color.Green;
+
                                 }
                                 // 如果是Output，添加点击事件
                                 else if (mainConfig.IOConfig.Outputs.Any(output => output.Tag == buttonTag))
@@ -533,12 +518,6 @@ namespace PQCDEMO
                 bool inputState = pCE_D122Wrapper.ReadInputBit(input.Id);
                 UpdateButtonColor(input, inputState);
             }
-
-
-            //foreach (var output in mainConfig.IOConfig.Outputs)
-            //{
-            //    // 如果您需要檢查輸出的狀態，也可以在這裡添加相應的代碼
-            //}
         }
         Thread ioThread;
         private void StartIOStatusCheckingThread()
@@ -676,63 +655,49 @@ namespace PQCDEMO
              lab.Location = new Point(x, y);
 
          }*/
-        private CancellationTokenSource cts = new CancellationTokenSource();
-        private void StopThreads()
+
+
+
+
+        private CancellationTokenSource ioThreadCancellation;
+
+        private async Task CheckAndUpdateIOStatusAsync()
         {
-            cts.Cancel();
-        }
-        private async Task StartUpdatingThreadAsync()
-        {
-            await Task.Run(() =>
+            foreach (var input in mainConfig.IOConfig.Inputs)
             {
-                while (!cts.Token.IsCancellationRequested)
-                {
-                    getAxisStatus();
-                    Task.Delay(100).Wait();
-                }
-            }, cts.Token);
+                bool inputState = await Task.Run(() => pCE_D122Wrapper.ReadInputBit(input.Id));
+                UpdateButtonColor(input, inputState);
+            }
         }
 
         private async Task StartIOStatusCheckingThreadAsync()
         {
-            await Task.Run(() =>
+            ioThreadCancellation = new CancellationTokenSource();
+
+            try
             {
-                while (!cts.Token.IsCancellationRequested)
+                while (!ioThreadCancellation.Token.IsCancellationRequested)
                 {
-                    CheckAndUpdateIOStatus();
-                    Task.Delay(100).Wait();
+                    await CheckAndUpdateIOStatusAsync();
+                    // await Task.Delay(500);
                 }
-            }, cts.Token);
+            }
+            catch (OperationCanceledException)
+            {
+
+            }
         }
 
-
-        private void t()
+        private void StopIOStatusCheckingThread()
         {
-            var result = CompareButtonStatesWithJson(mainConfig, groupBox_io);
-            var differences = (dynamic)result;
-            StringBuilder message = new StringBuilder();
-
-            if (differences.IOStateDifferences.Count > 0 || differences.AxisConfigDifferences.Count > 0)
-            {
-                message.AppendLine("發現以下差異：");
-
-                foreach (var diff in differences.IOStateDifferences)
-                {
-                    message.AppendLine($"IO狀態差異 - 標籤: {diff.Tag}, ID: {diff.Id}, 保存狀態: {diff.SavedState}, 當前狀態: {diff.CurrentState}");
-                }
-
-                foreach (var diff in differences.AxisConfigDifferences)
-                {
-                    message.AppendLine($"軸配置差異 - 名稱: {diff.AxisName}, 保存狀態: {diff.SavedStatus}, 當前狀態: {diff.CurrentStatus}");
-                }
-
-                MessageBox.Show(message.ToString(), "比對結果", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            }
-            else
-            {
-                MessageBox.Show("所有項目均匹配！", "比對結果", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
+            ioThreadCancellation?.Cancel();
         }
+
+
+
+
+
+
 
         private void t2()
         {
@@ -980,21 +945,11 @@ namespace PQCDEMO
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
 
         {
-            stopthread = true;
+            StopIOStatusCheckingThread();
+        }
 
-
-            // 如果執行緒仍在運行，等待它完成
-            if (ioThread != null && ioThread.IsAlive)
-            {
-
-                ioThread.Join();
-            }
-
-
-            //if (updateThread != null && updateThread.IsAlive)
-            //{
-            //    updateThread.Join();
-            //}
+        private void button_X_Click(object sender, EventArgs e)
+        {
 
         }
 
