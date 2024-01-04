@@ -45,6 +45,7 @@ namespace PQCDEMO
         {
             AxisName = axisName;
             groupBox.Text= axisName;
+            groupBox.ForeColor= Color.White;
             AxisNumber = axisNumber;
             motionController = motionCtl;
             GroupBox = groupBox;
@@ -72,8 +73,9 @@ namespace PQCDEMO
         public void UpdateTextBoxGroup(int startY)
         {
             int xOffset = 10;
-            int yOffset = 0;
+            int yOffset = 10;
             const int textBoxWidth = 50;
+            const int xPitch = 2;
             const int textBoxHeight = 50;
 
             for (int i = 0; i < TextBoxes.Count; i++)
@@ -90,7 +92,7 @@ namespace PQCDEMO
                 textBox.Location = new Point(xOffset, yOffset + startY);
                 textBox.Name = $"{AxisName}info{i}";
                 textBox.Text = $"{defaultBitMeaningMapping[i]}";
-                xOffset += textBoxWidth;
+                xOffset += textBoxWidth+xPitch;
             }
         }
 
@@ -121,6 +123,7 @@ namespace PQCDEMO
             {
                 bool isActive = IsFunctionActive(i);
                 TextBoxes[i].BackColor = isActive ? Color.LightGreen : Color.Red;
+                TextBoxes[i].ForeColor = isActive ? Color.Black : Color.White;
             }
         }
 

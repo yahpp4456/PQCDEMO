@@ -39,7 +39,7 @@
             button29 = new Button();
             button28 = new Button();
             pictureBox2 = new PictureBox();
-            groupBox5 = new GroupBox();
+            Info_groupBox = new GroupBox();
             panel1 = new Panel();
             groupBox_axis = new GroupBox();
             groupBox_io = new GroupBox();
@@ -86,12 +86,15 @@
             button6 = new Button();
             button4 = new Button();
             button2 = new Button();
+            groupBox3 = new GroupBox();
+            getDWlog_btn = new Button();
+            pictureBox3 = new PictureBox();
             groupBox1 = new GroupBox();
             groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox2).BeginInit();
-            groupBox5.SuspendLayout();
+            Info_groupBox.SuspendLayout();
             panel1.SuspendLayout();
             groupBox_io.SuspendLayout();
             panel11.SuspendLayout();
@@ -105,44 +108,55 @@
             panel13.SuspendLayout();
             panel7.SuspendLayout();
             panel2.SuspendLayout();
+            groupBox3.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox3).BeginInit();
             SuspendLayout();
             // 
             // groupBox1
             // 
+            groupBox1.BackColor = Color.Transparent;
             groupBox1.Controls.Add(button_Z);
             groupBox1.Controls.Add(button_Y);
             groupBox1.Controls.Add(button_X);
             groupBox1.Controls.Add(groupBox4);
             groupBox1.Controls.Add(pictureBox1);
-            groupBox1.ForeColor = Color.Black;
-            groupBox1.Location = new Point(12, 12);
+            groupBox1.ForeColor = Color.White;
+            groupBox1.Location = new Point(12, 11);
             groupBox1.Name = "groupBox1";
-            groupBox1.Size = new Size(558, 145);
+            groupBox1.Size = new Size(555, 145);
             groupBox1.TabIndex = 1;
             groupBox1.TabStop = false;
             groupBox1.Text = "軸卡";
             // 
             // button_Z
             // 
+            button_Z.BackColor = SystemColors.WindowFrame;
+            button_Z.FlatAppearance.BorderColor = Color.White;
+            button_Z.FlatStyle = FlatStyle.Flat;
             button_Z.Location = new Point(287, 45);
             button_Z.Name = "button_Z";
             button_Z.Size = new Size(94, 80);
             button_Z.TabIndex = 7;
             button_Z.Text = "Z";
-            button_Z.UseVisualStyleBackColor = true;
+            button_Z.UseVisualStyleBackColor = false;
             // 
             // button_Y
             // 
+            button_Y.BackColor = SystemColors.WindowFrame;
+            button_Y.FlatAppearance.BorderColor = Color.White;
+            button_Y.FlatStyle = FlatStyle.Flat;
             button_Y.Location = new Point(163, 45);
             button_Y.Name = "button_Y";
             button_Y.Size = new Size(94, 80);
             button_Y.TabIndex = 6;
             button_Y.Text = "Y";
-            button_Y.UseVisualStyleBackColor = true;
+            button_Y.UseVisualStyleBackColor = false;
             // 
             // button_X
             // 
-            button_X.BackColor = Color.White;
+            button_X.BackColor = SystemColors.WindowFrame;
+            button_X.FlatAppearance.BorderColor = Color.White;
+            button_X.FlatStyle = FlatStyle.Flat;
             button_X.Location = new Point(32, 45);
             button_X.Name = "button_X";
             button_X.Size = new Size(94, 80);
@@ -164,7 +178,7 @@
             // 
             pictureBox1.Dock = DockStyle.Right;
             pictureBox1.Image = Properties.Resources.M114;
-            pictureBox1.Location = new Point(405, 23);
+            pictureBox1.Location = new Point(402, 23);
             pictureBox1.Name = "pictureBox1";
             pictureBox1.Size = new Size(150, 119);
             pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
@@ -173,21 +187,26 @@
             // 
             // button1
             // 
+            button1.BackColor = SystemColors.WindowFrame;
+            button1.FlatAppearance.BorderSize = 5;
+            button1.FlatStyle = FlatStyle.Flat;
             button1.Font = new Font("Microsoft JhengHei UI", 48F, FontStyle.Regular, GraphicsUnit.Point);
-            button1.Location = new Point(12, 325);
+            button1.ForeColor = Color.White;
+            button1.Location = new Point(12, 464);
             button1.Name = "button1";
-            button1.Size = new Size(361, 289);
+            button1.Size = new Size(555, 150);
             button1.TabIndex = 0;
-            button1.Text = "Test";
-            button1.UseVisualStyleBackColor = true;
+            button1.Text = "Run";
+            button1.UseVisualStyleBackColor = false;
             button1.Click += button1_Click;
             // 
             // groupBox2
             // 
+            groupBox2.BackColor = Color.Transparent;
             groupBox2.Controls.Add(button29);
             groupBox2.Controls.Add(button28);
             groupBox2.Controls.Add(pictureBox2);
-            groupBox2.ForeColor = Color.Black;
+            groupBox2.ForeColor = Color.White;
             groupBox2.Location = new Point(12, 162);
             groupBox2.Name = "groupBox2";
             groupBox2.Size = new Size(555, 145);
@@ -197,17 +216,20 @@
             // 
             // button29
             // 
-            button29.Location = new Point(153, 33);
+            button29.FlatStyle = FlatStyle.Flat;
+            button29.ForeColor = Color.White;
+            button29.Location = new Point(257, 33);
             button29.Name = "button29";
             button29.Size = new Size(124, 80);
             button29.TabIndex = 8;
             button29.Text = "DP1000G5";
             button29.UseVisualStyleBackColor = true;
-            button29.Click += button29_Click;
             // 
             // button28
             // 
-            button28.Location = new Point(23, 33);
+            button28.FlatStyle = FlatStyle.Flat;
+            button28.ForeColor = Color.White;
+            button28.Location = new Point(32, 33);
             button28.Name = "button28";
             button28.Size = new Size(124, 80);
             button28.TabIndex = 7;
@@ -226,15 +248,17 @@
             pictureBox2.TabIndex = 0;
             pictureBox2.TabStop = false;
             // 
-            // groupBox5
+            // Info_groupBox
             // 
-            groupBox5.Controls.Add(panel1);
-            groupBox5.Location = new Point(622, 19);
-            groupBox5.Name = "groupBox5";
-            groupBox5.Size = new Size(444, 598);
-            groupBox5.TabIndex = 4;
-            groupBox5.TabStop = false;
-            groupBox5.Text = "機台Config";
+            Info_groupBox.BackColor = Color.Transparent;
+            Info_groupBox.Controls.Add(panel1);
+            Info_groupBox.ForeColor = Color.White;
+            Info_groupBox.Location = new Point(622, 17);
+            Info_groupBox.Name = "Info_groupBox";
+            Info_groupBox.Size = new Size(444, 600);
+            Info_groupBox.TabIndex = 4;
+            Info_groupBox.TabStop = false;
+            Info_groupBox.Text = "機台Config";
             // 
             // panel1
             // 
@@ -244,7 +268,7 @@
             panel1.Location = new Point(3, 23);
             panel1.Margin = new Padding(1);
             panel1.Name = "panel1";
-            panel1.Size = new Size(438, 572);
+            panel1.Size = new Size(438, 574);
             panel1.TabIndex = 0;
             // 
             // groupBox_axis
@@ -724,36 +748,76 @@
             // 
             // button2
             // 
-            button2.Location = new Point(379, 325);
+            button2.Location = new Point(573, 17);
             button2.Name = "button2";
-            button2.Size = new Size(194, 292);
+            button2.Size = new Size(43, 39);
             button2.TabIndex = 6;
             button2.Text = "EXPORT";
             button2.UseVisualStyleBackColor = true;
+            button2.Visible = false;
             button2.Click += button2_Click_1;
+            // 
+            // groupBox3
+            // 
+            groupBox3.BackColor = Color.Transparent;
+            groupBox3.Controls.Add(getDWlog_btn);
+            groupBox3.Controls.Add(pictureBox3);
+            groupBox3.ForeColor = Color.White;
+            groupBox3.Location = new Point(12, 313);
+            groupBox3.Name = "groupBox3";
+            groupBox3.Size = new Size(555, 145);
+            groupBox3.TabIndex = 7;
+            groupBox3.TabStop = false;
+            groupBox3.Text = "DediWare";
+            // 
+            // getDWlog_btn
+            // 
+            getDWlog_btn.FlatStyle = FlatStyle.Flat;
+            getDWlog_btn.Font = new Font("Microsoft JhengHei UI", 24F, FontStyle.Regular, GraphicsUnit.Point);
+            getDWlog_btn.ForeColor = Color.White;
+            getDWlog_btn.Location = new Point(23, 44);
+            getDWlog_btn.Name = "getDWlog_btn";
+            getDWlog_btn.Size = new Size(358, 80);
+            getDWlog_btn.TabIndex = 9;
+            getDWlog_btn.Text = "GetLog";
+            getDWlog_btn.UseVisualStyleBackColor = true;
+            getDWlog_btn.Click += button29_Click;
+            // 
+            // pictureBox3
+            // 
+            pictureBox3.Dock = DockStyle.Right;
+            pictureBox3.Image = Properties.Resources.DP;
+            pictureBox3.Location = new Point(402, 23);
+            pictureBox3.Name = "pictureBox3";
+            pictureBox3.Size = new Size(150, 119);
+            pictureBox3.SizeMode = PictureBoxSizeMode.Zoom;
+            pictureBox3.TabIndex = 0;
+            pictureBox3.TabStop = false;
             // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(9F, 19F);
             AutoScaleMode = AutoScaleMode.Font;
-            BackColor = Color.WhiteSmoke;
+            BackColor = SystemColors.WindowFrame;
             ClientSize = new Size(1079, 629);
+            Controls.Add(groupBox3);
             Controls.Add(button2);
-            Controls.Add(groupBox5);
+            Controls.Add(Info_groupBox);
             Controls.Add(groupBox2);
             Controls.Add(button1);
             Controls.Add(groupBox1);
+            ForeColor = Color.Black;
             FormBorderStyle = FormBorderStyle.Fixed3D;
             MaximizeBox = false;
             Name = "MainForm";
-            Text = "PQC";
+            Text = "Machine Diagnostic Tool";
             FormClosing += MainForm_FormClosing;
             FormClosed += MainForm_Closed;
             groupBox1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             groupBox2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)pictureBox2).EndInit();
-            groupBox5.ResumeLayout(false);
+            Info_groupBox.ResumeLayout(false);
             panel1.ResumeLayout(false);
             groupBox_io.ResumeLayout(false);
             panel11.ResumeLayout(false);
@@ -767,6 +831,8 @@
             panel13.ResumeLayout(false);
             panel7.ResumeLayout(false);
             panel2.ResumeLayout(false);
+            groupBox3.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)pictureBox3).EndInit();
             ResumeLayout(false);
         }
 
@@ -780,7 +846,7 @@
         private Label label5;
         private Label label6;
         private GroupBox groupBox4;
-        private GroupBox groupBox5;
+        private GroupBox Info_groupBox;
         private Button button2;
         private Panel panel1;
         private GroupBox groupBox_axis;
@@ -832,5 +898,8 @@
         private Button button4;
         private Button button29;
         private Button button28;
+        private GroupBox groupBox3;
+        private PictureBox pictureBox3;
+        private Button getDWlog_btn;
     }
 }

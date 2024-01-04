@@ -15,6 +15,8 @@ using static System.Windows.Forms.AxHost;
 using System.Text;
 using System.Data;
 using System.Threading;
+using System.Diagnostics.Eventing.Reader;
+using System.Globalization;
 
 namespace PQCDEMO
 {
@@ -27,11 +29,10 @@ namespace PQCDEMO
 
 
         private MainConfig mainConfig = new MainConfig();//主要配置文件
-        //private ApplicationConfig appConfig;
         private static bool _isdemo = true;
         private MotionController _m114 = new MotionController(_isdemo);
 
-        IOCardWrapper pCE_D122Wrapper = new IOCardWrapper(_isdemo);
+        private IOCardWrapper pCE_D122Wrapper = new IOCardWrapper(_isdemo);
 
         //資料來源
         string sourceFilePath = ConfigurationManager.AppSettings["sourceFilePath"];
@@ -41,20 +42,76 @@ namespace PQCDEMO
         string needDataPeriod = ConfigurationManager.AppSettings["needDataPeriod"];
 
         string typeFilePath = ConfigurationManager.AppSettings["typeFilePath"];
+
+
         public MainForm()
         {
 
             InitializeComponent();
             // 初始化軸物件
+
+
+
             groupBox_axis.Visible = false;
             axisgroup(groupBox_axis);
 
             LoadConfig();
             groupBoxes.Add(groupBox_io);
-
+            Info_groupBox.ForeColor = Color.White;
+            groupBox_io.ForeColor = Color.White;
             StartUpdatingThread();
             //  StartIOStatusCheckingThread();
             StartIOStatusCheckingThreadAsync();
+
+
+            // 詢問使用者輸入密碼
+            string password = PromptForPassword();
+            if (CheckPasswordLevel(password) == PasswordLevel.High)
+            {
+                // 高級初始化
+                HighLevelInitialization();
+            }
+            else
+            {
+                // 標準初始化
+                StandardInitialization();
+            }
+
+        }
+
+        private string PromptForPassword()
+        {
+            // 使用 MessageBox 顯示輸入框，並取得使用者輸入的密碼
+            return Microsoft.VisualBasic.Interaction.InputBox("權限輸入", "權限", "FQC");
+        }
+        private PasswordLevel CheckPasswordLevel(string password)
+        {
+            // 根據實際需求檢查密碼等級，這裡只是一個示例
+            if (password == "PQC")
+            {
+                return PasswordLevel.High;
+            }
+            else
+            {
+                return PasswordLevel.Standard;
+            }
+        }
+
+        private void HighLevelInitialization()
+        {
+            button2.Visible = true;
+        }
+
+        private void StandardInitialization()
+        {
+            button2.Visible = false;
+        }
+
+        // 定義密碼等級的列舉型別
+        private enum PasswordLevel
+        {
+            High,
+            Standard
         }
         string[] texts = { "X", "Y", "Z" };
         private void axisgroup(GroupBox groupBox)
@@ -80,18 +137,18 @@ namespace PQCDEMO
                     case 0:
                         axisXController = new AxisController("X", _m114, 0, newGroupBox);
                         axisXController.UpdateTextBoxGroup(startY);
-                        button_X.Click += (sender, args) => ToggleGroup(newGroupBox);
+                        button_X.Click += (sender, args) => ToggleGroup((Button)sender, newGroupBox);
 
                         break;
                     case 1:
                         axisYController = new AxisController("Y", _m114, 1, newGroupBox);
                         axisYController.UpdateTextBoxGroup(startY);
-                        button_Y.Click += (sender, args) => ToggleGroup(newGroupBox);
+                        button_Y.Click += (sender, args) => ToggleGroup((Button)sender, newGroupBox);
                         break;
                     case 2:
                         axisZController = new AxisController("Z", _m114, 2, newGroupBox);
                         axisZController.UpdateTextBoxGroup(startY);
-                        button_Z.Click += (sender, args) => ToggleGroup(newGroupBox);
+                        button_Z.Click += (sender, args) => ToggleGroup((Button)sender, newGroupBox);
                         break;
 
                     default:
@@ -102,7 +159,7 @@ namespace PQCDEMO
             }
 
         }
-        private void ToggleGroup(GroupBox groupBox)
+        private void ToggleGroup(Button btn, GroupBox groupBox)
         {
 
             groupBox.SuspendLayout();
@@ -110,7 +167,19 @@ namespace PQCDEMO
             groupBox.Visible = !groupBox.Visible;
 
             AdjustGroupLayout();
-
+            // Check if groupBox is a child of panel1
+            if (panel1.Controls.Contains(groupBox))
+            {
+                // Change btn color to yellow
+                btn.BackColor = Color.Yellow;
+                btn.ForeColor = SystemColors.WindowFrame;
+            }
+            else
+            {
+                // Change btn color back to original
+                btn.BackColor = SystemColors.WindowFrame;
+                btn.ForeColor = Color.White;
+            }
             groupBox.ResumeLayout(true);
 
         }
@@ -326,7 +395,7 @@ namespace PQCDEMO
                       .FirstOrDefault(item => item.Id == savedState.Id);
 
                 string ioItemRemark = currentIOItem?.Remark ?? "未知";
-        
+
 
                 if (currentState == null || currentState.State != savedState.State)
                 {
@@ -494,12 +563,14 @@ namespace PQCDEMO
                                     btn.Click += (sender, e) => InputButtonClick(ioItem);
                                     bool inputState = pCE_D122Wrapper.ReadInputBit(ioItem.Id);
                                     btn.BackColor = inputState ? Color.LightGreen : Color.Green;
+                                    btn.ForeColor = inputState ? Color.DarkSlateGray : Color.White;
 
                                 }
                                 // 如果是Output，添加点击事件
                                 else if (mainConfig.IOConfig.Outputs.Any(output => output.Tag == buttonTag))
                                 {
                                     btn.Click += (sender, e) => OutputButtonClick(ioItem);
+                                    btn.ForeColor = Color.DarkSlateGray;
                                 }
                             }
                         }
@@ -550,6 +621,7 @@ namespace PQCDEMO
                 if (buttonToUpdate != null)
                 {
                     buttonToUpdate.BackColor = status ? Color.LightGreen : Color.Green;
+                    buttonToUpdate.ForeColor = status ? Color.DarkSlateGray : Color.White;
                 }
             }
         }
@@ -775,9 +847,14 @@ namespace PQCDEMO
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void button3_Click_1(object sender, EventArgs e)
+
+
+        private void button29_Click(object sender, EventArgs e)
         {
             DirectoryInfo root = new DirectoryInfo(sourceFilePath);
+
+            // 清空目標資料夾內容
+            ClearTargetFolder(targetFilePath);
 
             var needFileList = GetNeedFile(root);
             foreach (var data in needFileList)
@@ -788,7 +865,21 @@ namespace PQCDEMO
             Process.Start("explorer.exe", targetFilePath);
         }
 
-
+        // 新增清空目標資料夾的方法
+        private void ClearTargetFolder(string targetPath)
+        {
+            if (Directory.Exists(targetPath))
+            {
+                foreach (var file in Directory.GetFiles(targetPath))
+                {
+                    File.Delete(file);
+                }
+                foreach (var dir in Directory.GetDirectories(targetPath))
+                {
+                    Directory.Delete(dir, true);
+                }
+            }
+        }
         private List<LogFileInfo> GetNeedFile(DirectoryInfo root)
         {
             var result = new List<LogFileInfo>();
@@ -797,6 +888,7 @@ namespace PQCDEMO
             foreach (FileInfo file in root.GetFiles())
             {
                 var data = new LogFileInfo();
+
                 if (file.Extension == ".html")
                 {
                     var timeStr = file.Name.Substring(0, 10);
@@ -835,12 +927,20 @@ namespace PQCDEMO
                         timeStr = file.Name.Substring(14, 10);
                         data.targetUrl = $"{targetFilePath}DediNetLinkerLog";
                     }
+                    else if (file.Name.Contains("scan"))
+                    {
+                        continue;
+                    }
+
 
                     if (DateTime.Now.AddDays(-period).Date > DateTime.Parse(timeStr) || DateTime.Parse(timeStr) > DateTime.Now.Date)
                     {
                         continue;
                     }
                     data.fileName = file.Name;
+
+
+
                 }
                 else
                 {
@@ -912,30 +1012,10 @@ namespace PQCDEMO
 
         private void button28_Click(object sender, EventArgs e)
         {
-            ToggleGroup(groupBox_io);
+            ToggleGroup((Button)sender, groupBox_io);
         }
 
 
-        private void button29_Click(object sender, EventArgs e)
-        {
-
-            stopthread = true;
-
-
-            // 如果執行緒仍在運行，等待它完成
-            if (ioThread != null && ioThread.IsAlive)
-            {
-
-                ioThread.Join();
-            }
-
-
-            if (updateThread != null && updateThread.IsAlive)
-            {
-                updateThread.Join();
-            }
-            this.Close();
-        }
 
         private void MainForm_Closed(object sender, FormClosedEventArgs e)
         {
