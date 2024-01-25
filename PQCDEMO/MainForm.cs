@@ -50,8 +50,6 @@ namespace PQCDEMO
             InitializeComponent();
             // 初始化軸物件
 
-
-
             groupBox_axis.Visible = false;
             axisgroup(groupBox_axis);
 
@@ -751,7 +749,7 @@ namespace PQCDEMO
                 while (!ioThreadCancellation.Token.IsCancellationRequested)
                 {
                     await CheckAndUpdateIOStatusAsync();
-                    // await Task.Delay(500);
+                    await Task.Delay(100);
                 }
             }
             catch (OperationCanceledException)

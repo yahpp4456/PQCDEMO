@@ -50,9 +50,6 @@ namespace PQCDEMO
             };
             this.Controls.Add(DataGridView);
 
-
-
-
         }
 
         public void SetDifferences(DataTable table)
